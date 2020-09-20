@@ -23,7 +23,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-sm-9 ml-3">
+        <div class="col-sm-9">
             <div class="row">
                 <?php foreach ($products as $product): ?>
                 <?php $images = explode(',', $product->imgs) ?>

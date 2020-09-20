@@ -52,9 +52,9 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
             </ul>
         </div>
         <ul class="navbar-nav ml-auto">
-            <li class="nav-link">
+            <li class="nav-item">
                 <?php if (!$this->request->session()->read('Auth.User.is_admin')): ?>
-                <?= $this->Html->link('<span class="badge badge-danger rounded-circle position-absolute king-badger cart-badge"></span><i class="fa fa-shopping-cart"></i>', ['prefix' => 'shop', 'controller' => 'Products', 'action' => 'cart'], ['escape' => false, 'class' => 'btn btn-link']) ?>    
+                <?= $this->Html->link('<span class="badge badge-danger rounded-circle position-absolute king-badger cart-badge"></span><i class="fa fa-shopping-cart"></i>', ['prefix' => 'shop', 'controller' => 'Products', 'action' => 'cart'], ['escape' => false, 'class' => 'btn btn-link nav-link']) ?>    
                 <?php endif ?>
             </li>
             <?php if ($this->request->session()->read('Auth')): ?>
@@ -67,6 +67,10 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
                 <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
                     <?= $this->Html->link('<i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i> Logout', ['prefix' => false,'controller' => 'Users', 'action' => 'logout'], ['escape' => false, 'class' => 'dropdown-item']) ?>
                 </div>
+            </li>
+            <?php else: ?>
+            <li class="nav-item">
+                <?= $this->Html->link('Login', ['prefix' => false, 'controller' => 'Users', 'action' => 'login'], ['class' => 'nav-link btn-outline-dark']) ?>
             </li>
             <?php endif ?>
             
