@@ -6,10 +6,12 @@
     "license": "MIT",
     "require": {
         "php": ">=5.6",
+        "adhocore/jwt": "^1.0",
         "cakephp/cakephp": "3.9.*",
         "cakephp/migrations": "^2.0.0",
         "cakephp/plugin-installer": "^1.0",
-        "mobiledetect/mobiledetectlib": "2.*"
+        "mobiledetect/mobiledetectlib": "2.*",
+        "paypal/rest-api-sdk-php": "^1.14"
     },
     "require-dev": {
         "cakephp/bake": "^1.9.0",

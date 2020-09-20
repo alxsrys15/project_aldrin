@@ -26,33 +26,71 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
         <?= $this->fetch('title') ?>
     </title>
     <?= $this->Html->meta('icon') ?>
-
-    <?= $this->Html->css('base.css') ?>
-    <?= $this->Html->css('style.css') ?>
-
+    <?= $this->Html->css('bootstrap.min.css') ?>
+    <?= $this->Html->script('jquery.min.js') ?> 
+    <?= $this->Html->script('bootstrap.bundle.min.js') ?>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/bs-stepper/dist/js/bs-stepper.min.js"></script>
+    <?= $this->Html->script('https://cdn.jsdelivr.net/npm/sweetalert2@9') ?>
     <?= $this->fetch('meta') ?>
     <?= $this->fetch('css') ?>
-    <?= $this->fetch('script') ?>
 </head>
 <body>
-    <nav class="top-bar expanded" data-topbar role="navigation">
-        <ul class="title-area large-3 medium-4 columns">
-            <li class="name">
-                <h1><a href=""><?= $this->fetch('title') ?></a></h1>
-            </li>
-        </ul>
-        <div class="top-bar-section">
-            <ul class="right">
-                <li><a target="_blank" href="https://book.cakephp.org/3/">Documentation</a></li>
-                <li><a target="_blank" href="https://api.cakephp.org/3.0/">API</a></li>
+    <nav class="navbar navbar-expand navbar-dark bg-dark topbar mb-4 static-top shadow">
+        <a href="/" class="navbar-brand">NAME NG BENEF</a>
+        <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+            <i class="fa fa-bars"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="/shop">Shop</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Feed</span></a>
+                </li>
             </ul>
         </div>
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-link">
+                
+                <?= $this->Html->link('<span class="badge badge-danger rounded-circle position-absolute king-badger cart-badge"></span><i class="fa fa-shopping-cart"></i>', ['prefix' => 'shop', 'controller' => 'Products', 'action' => 'cart'], ['escape' => false, 'class' => 'btn btn-link']) ?>
+            </li>
+            <?php if ($this->request->session()->read('Auth')): ?>
+            <li class="nav-item dropdown no-arrow">
+                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span class="mr-2 d-none d-lg-inline text-gray-600 small">
+                        <?= $this->request->session()->read('Auth.User.first_name') . ' ' .$this->request->session()->read('Auth.User.last_name') ?>
+                    </span>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                    <?= $this->Html->link('<i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i> Logout', ['prefix' => false,'controller' => 'Users', 'action' => 'logout'], ['escape' => false, 'class' => 'dropdown-item']) ?>
+                </div>
+            </li>
+            <?php endif ?>
+            
+        </ul>
     </nav>
     <?= $this->Flash->render() ?>
-    <div class="container clearfix">
+    <div class="container">
+        
         <?= $this->fetch('content') ?>
     </div>
     <footer>
     </footer>
+    
 </body>
+<?= $this->Html->script('cart'); ?>
+<?= $this->fetch('script') ?>
+<script type="text/javascript">
+    var url = '<?= $this->Url->build('/', true); ?>';
+    var csrfToken = <?= json_encode($this->request->getParam('_csrfToken')) ?>;
+    function cartBadge () {
+        var cartCounter = shoppingCart.listCart().length;
+        $('.cart-badge').text(cartCounter);
+    }
+    $(document).ready(function () {
+        cartBadge();
+    });
+</script>
 </html>

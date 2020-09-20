@@ -64,6 +64,10 @@ Router::scope('/', function (RouteBuilder $routes) {
      */
     $routes->connect('/', ['controller' => 'Pages', 'action' => 'display', 'home']);
 
+    $routes->connect('/login', ['controller' => 'Users', 'action' => 'login']);
+
+    $routes->connect('/register', ['controller' => 'Users', 'action' => 'register']);
+
     /*
      * ...and connect the rest of 'Pages' controller's URLs.
      */
@@ -91,6 +95,19 @@ Router::scope('/', function (RouteBuilder $routes) {
     $routes->fallbacks(DashedRoute::class);
 });
 
+Router::prefix('admin', function (RouteBuilder $routes) {
+    // All routes here will be prefixed with `/admin`
+    // And have the prefix => admin route element added.
+    $routes->connect('/', ['controller' => 'Products', 'action' => 'index']);
+    $routes->fallbacks(DashedRoute::class);
+});
+
+Router::prefix('shop', function (RouteBuilder $routes) {
+    // All routes here will be prefixed with `/admin`
+    // And have the prefix => admin route element added.
+    $routes->connect('/', ['controller' => 'Products', 'action' => 'index']);
+    $routes->fallbacks(DashedRoute::class);
+});
 /*
  * If you need a different set of middleware or none at all,
  * open new scope and define routes there.

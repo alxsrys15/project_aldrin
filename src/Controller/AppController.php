@@ -45,11 +45,38 @@ class AppController extends Controller
             'enableBeforeRedirect' => false,
         ]);
         $this->loadComponent('Flash');
+        $this->loadComponent('Auth', [
+            'authenticate' => [
+                'Form' => [
+                    'fields' => [
+                        'username' => 'email',
+                        'password' => 'password'
+                    ]
+                ]
+            ],
+            'loginAction' => [
+                'controller' => 'Users',
+                'action' => 'login'
+            ],
+            'unauthorizedRedirect' => [
+                'controller' => 'Users',
+                'action' => 'login'
+            ],
+            'authError' => false
+        ]);
 
         /*
          * Enable the following component for recommended CakePHP security settings.
          * see https://book.cakephp.org/3/en/controllers/components/security.html
          */
         //$this->loadComponent('Security');
+        // $this->Auth->allow(['display']);
+
+        $this->apiContext = new \PayPal\Rest\ApiContext(
+            new \PayPal\Auth\OAuthTokenCredential(
+                'AVFZo56hgCoYU6YVosEaZtMJLYvSLaeP6yyuU1BHuQeQ64jYd4H29vOEmmR_fghSUJMcelZr2bPU25tf',     // ClientID
+                'EAHdRx7d6AI3rwXN0eSPsRLJtyEIqquZfTAheYW7rqQmepZvIn3EidjKiz_DFyMMLea4xliojAyyrnAR'      // ClientSecret
+            )
+        );
     }
 }
