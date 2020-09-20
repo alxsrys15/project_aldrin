@@ -10,6 +10,7 @@ use Cake\Validation\Validator;
  * FeedComments Model
  *
  * @property \App\Model\Table\UsersTable&\Cake\ORM\Association\BelongsTo $Users
+ * @property &\Cake\ORM\Association\BelongsTo $Feeds
  *
  * @method \App\Model\Entity\FeedComment get($primaryKey, $options = [])
  * @method \App\Model\Entity\FeedComment newEntity($data = null, array $options = [])
@@ -43,6 +44,9 @@ class FeedCommentsTable extends Table
         $this->belongsTo('Users', [
             'foreignKey' => 'user_id',
         ]);
+        $this->belongsTo('Feeds', [
+            'foreignKey' => 'feed_id',
+        ]);
     }
 
     /**
@@ -75,6 +79,7 @@ class FeedCommentsTable extends Table
     public function buildRules(RulesChecker $rules)
     {
         $rules->add($rules->existsIn(['user_id'], 'Users'));
+        $rules->add($rules->existsIn(['feed_id'], 'Feeds'));
 
         return $rules;
     }

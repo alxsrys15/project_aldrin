@@ -49,10 +49,39 @@ class FeedsController extends AppController
     public function view($id = null)
     {
         $feed = $this->Feeds->get($id, [
-            'contain' => ['FeedDislikes', 'FeedLikes'],
+            'contain' => ['FeedDislikes', 'FeedLikes', 'FeedComments'],
         ]);
 
-        $this->set('feed', $feed);
+        $query = $this->Feeds->FeedComments->find('all', [
+            'conditions' => [
+                'feed_id' => $id
+            ],
+            'order' => [
+                'created' => 'desc'
+            ],
+            'contain' => [
+                'Users'
+            ]
+        ]);
+        $feed_comments = $this->paginate($query ,[
+            'limit' => 5
+        ]);
+
+        if ($this->request->is('post')) {
+            $data = [
+                'user_id' => $this->Auth->User('id'),
+                'feed_id' => $id,
+                'comment' => $this->request->data['comment']
+            ];
+
+            $new_comment = $this->Feeds->FeedComments->newEntity($data);
+            if ($this->Feeds->FeedComments->save($new_comment)) {
+                $this->Flash->success('Comment added');
+                return $this->redirect(['action' => 'view', $id]);
+            }
+        }
+
+        $this->set(compact('feed', 'feed_comments'));
     }
 
     /**

@@ -3,96 +3,85 @@
  * @var \App\View\AppView $this
  * @var \App\Model\Entity\Feed $feed
  */
+
+// pr($feed);die();
+$images = explode(',', $feed->img_name);
+
 ?>
-<nav class="large-3 medium-4 columns" id="actions-sidebar">
-    <ul class="side-nav">
-        <li class="heading"><?= __('Actions') ?></li>
-        <li><?= $this->Html->link(__('Edit Feed'), ['action' => 'edit', $feed->id]) ?> </li>
-        <li><?= $this->Form->postLink(__('Delete Feed'), ['action' => 'delete', $feed->id], ['confirm' => __('Are you sure you want to delete # {0}?', $feed->id)]) ?> </li>
-        <li><?= $this->Html->link(__('List Feeds'), ['action' => 'index']) ?> </li>
-        <li><?= $this->Html->link(__('New Feed'), ['action' => 'add']) ?> </li>
-        <li><?= $this->Html->link(__('List Feed Dislikes'), ['controller' => 'FeedDislikes', 'action' => 'index']) ?> </li>
-        <li><?= $this->Html->link(__('New Feed Dislike'), ['controller' => 'FeedDislikes', 'action' => 'add']) ?> </li>
-        <li><?= $this->Html->link(__('List Feed Likes'), ['controller' => 'FeedLikes', 'action' => 'index']) ?> </li>
-        <li><?= $this->Html->link(__('New Feed Like'), ['controller' => 'FeedLikes', 'action' => 'add']) ?> </li>
-    </ul>
-</nav>
-<div class="feeds view large-9 medium-8 columns content">
-    <h3><?= h($feed->id) ?></h3>
-    <table class="vertical-table">
-        <tr>
-            <th scope="row"><?= __('Description') ?></th>
-            <td><?= h($feed->description) ?></td>
-        </tr>
-        <tr>
-            <th scope="row"><?= __('Img Name') ?></th>
-            <td><?= h($feed->img_name) ?></td>
-        </tr>
-        <tr>
-            <th scope="row"><?= __('Img Ext') ?></th>
-            <td><?= h($feed->img_ext) ?></td>
-        </tr>
-        <tr>
-            <th scope="row"><?= __('Id') ?></th>
-            <td><?= $this->Number->format($feed->id) ?></td>
-        </tr>
-        <tr>
-            <th scope="row"><?= __('Created') ?></th>
-            <td><?= h($feed->created) ?></td>
-        </tr>
-        <tr>
-            <th scope="row"><?= __('Modified') ?></th>
-            <td><?= h($feed->modified) ?></td>
-        </tr>
-    </table>
-    <div class="related">
-        <h4><?= __('Related Feed Dislikes') ?></h4>
-        <?php if (!empty($feed->feed_dislikes)): ?>
-        <table cellpadding="0" cellspacing="0">
-            <tr>
-                <th scope="col"><?= __('Id') ?></th>
-                <th scope="col"><?= __('Feed Id') ?></th>
-                <th scope="col"><?= __('User Id') ?></th>
-                <th scope="col" class="actions"><?= __('Actions') ?></th>
-            </tr>
-            <?php foreach ($feed->feed_dislikes as $feedDislikes): ?>
-            <tr>
-                <td><?= h($feedDislikes->id) ?></td>
-                <td><?= h($feedDislikes->feed_id) ?></td>
-                <td><?= h($feedDislikes->user_id) ?></td>
-                <td class="actions">
-                    <?= $this->Html->link(__('View'), ['controller' => 'FeedDislikes', 'action' => 'view', $feedDislikes->id]) ?>
-                    <?= $this->Html->link(__('Edit'), ['controller' => 'FeedDislikes', 'action' => 'edit', $feedDislikes->id]) ?>
-                    <?= $this->Form->postLink(__('Delete'), ['controller' => 'FeedDislikes', 'action' => 'delete', $feedDislikes->id], ['confirm' => __('Are you sure you want to delete # {0}?', $feedDislikes->id)]) ?>
-                </td>
-            </tr>
-            <?php endforeach; ?>
-        </table>
-        <?php endif; ?>
+
+<style type="text/css">
+    .img-size {
+        width: inherit;
+        height: inherit;
+    }
+</style>
+
+<div class="row">
+    <div class="col-sm-6">
+        <div class="card mb-2">
+            <div class="card-body">
+                <div class="carousel slide" data-ride="carousel" id="productCarousel<?= $feed->id ?>">
+                    <div class="carousel-inner">
+                        <?php if (!empty($feed->img_name)): ?>
+                            <?php foreach ($images as $key => $image): ?>
+                            <div class="carousel-item <?= $key === 0 ? 'active' : '' ?>">
+                                <?= $this->Html->image('feed_images/' . $image, ['class' => 'img-size']) ?>
+                            </div>
+                            <?php endforeach ?>
+                        <?php endif ?>
+                    </div>
+                    <a class="carousel-control-prev" href="#productCarousel<?= $feed->id ?>" role="button" data-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="carousel-control-next" href="#productCarousel<?= $feed->id ?>" role="button" data-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Next</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 mt-3">
+            <?= $this->Form->create() ?>
+            <div class="form-group">
+                <?= $this->Form->input('comment', ['class' => 'form-control', 'required', 'autocomplete' => 'off', 'label' => false, 'type' => 'textarea', 'placeholder' => 'What do you think?']) ?>
+                <button class="btn btn-dark btn-sm mt-3" type="submit">Add comment</button>
+            </div>
+            <?= $this->Form->end() ?>
+        </div>
     </div>
-    <div class="related">
-        <h4><?= __('Related Feed Likes') ?></h4>
-        <?php if (!empty($feed->feed_likes)): ?>
-        <table cellpadding="0" cellspacing="0">
-            <tr>
-                <th scope="col"><?= __('Id') ?></th>
-                <th scope="col"><?= __('Feed Id') ?></th>
-                <th scope="col"><?= __('User Id') ?></th>
-                <th scope="col" class="actions"><?= __('Actions') ?></th>
-            </tr>
-            <?php foreach ($feed->feed_likes as $feedLikes): ?>
-            <tr>
-                <td><?= h($feedLikes->id) ?></td>
-                <td><?= h($feedLikes->feed_id) ?></td>
-                <td><?= h($feedLikes->user_id) ?></td>
-                <td class="actions">
-                    <?= $this->Html->link(__('View'), ['controller' => 'FeedLikes', 'action' => 'view', $feedLikes->id]) ?>
-                    <?= $this->Html->link(__('Edit'), ['controller' => 'FeedLikes', 'action' => 'edit', $feedLikes->id]) ?>
-                    <?= $this->Form->postLink(__('Delete'), ['controller' => 'FeedLikes', 'action' => 'delete', $feedLikes->id], ['confirm' => __('Are you sure you want to delete # {0}?', $feedLikes->id)]) ?>
-                </td>
-            </tr>
-            <?php endforeach; ?>
-        </table>
-        <?php endif; ?>
+    <div class="col-sm-6">
+        <h5>Comments</h5>
+        <div class="row">
+            <div class="col-sm-12">
+                <?php if (count($feed_comments) < 1): ?>
+                <div class="card">
+                    <div class="card-body">
+                        Be the one to comment first.
+                    </div>
+                </div>
+                <?php else: ?>
+                    <?php foreach ($feed_comments as $comment): ?>
+                    <div class="card mb-2">
+                        <div class="card-body">
+                            <p><?= $comment->comment ?></p>
+                            <small><?= $comment->user->first_name ?> <?= $comment->user->last_name ?></small>
+                            <br>
+                            <small><?= $comment->created->format('Y-m-d H:i:s') ?></small>
+                        </div>
+                    </div>
+                    <?php endforeach ?>
+                    <div class="paginator mt-3">
+                        <ul class="pagination">
+                            <?= $this->Paginator->first(__('First')) ?>
+                            <?= $this->Paginator->prev(\__('Previous')) ?>
+                            <?= $this->Paginator->numbers() ?>
+                            <?= $this->Paginator->next(__('Next')) ?>
+                            <?= $this->Paginator->last(__('Last')) ?>
+                        </ul>
+                    </div>
+                <?php endif ?>
+            </div>
+        </div>
     </div>
 </div>

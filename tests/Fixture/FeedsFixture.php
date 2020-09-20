@@ -43,8 +43,8 @@ class FeedsFixture extends TestFixture
                 'description' => 'Lorem ipsum dolor sit amet',
                 'img_name' => 'Lorem ipsum dolor sit amet',
                 'img_ext' => 'Lorem ipsum dolor sit amet',
-                'created' => '2020-09-20 06:06:53',
-                'modified' => '2020-09-20 06:06:53',
+                'created' => '2020-09-20 11:06:16',
+                'modified' => '2020-09-20 11:06:16',
             ],
         ];
         parent::init();

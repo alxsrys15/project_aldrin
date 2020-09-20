@@ -9,6 +9,7 @@ use Cake\Validation\Validator;
 /**
  * Feeds Model
  *
+ * @property &\Cake\ORM\Association\HasMany $FeedComments
  * @property \App\Model\Table\FeedDislikesTable&\Cake\ORM\Association\HasMany $FeedDislikes
  * @property \App\Model\Table\FeedLikesTable&\Cake\ORM\Association\HasMany $FeedLikes
  *
@@ -41,6 +42,9 @@ class FeedsTable extends Table
 
         $this->addBehavior('Timestamp');
 
+        $this->hasMany('FeedComments', [
+            'foreignKey' => 'feed_id',
+        ]);
         $this->hasMany('FeedDislikes', [
             'foreignKey' => 'feed_id',
         ]);

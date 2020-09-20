@@ -8,6 +8,7 @@ use Cake\ORM\Entity;
  *
  * @property int $id
  * @property int|null $user_id
+ * @property int|null $feed_id
  * @property string|null $comment
  * @property \Cake\I18n\FrozenTime|null $created
  * @property \Cake\I18n\FrozenTime|null $modified
@@ -27,6 +28,7 @@ class FeedComment extends Entity
      */
     protected $_accessible = [
         'user_id' => true,
+        'feed_id' => true,
         'comment' => true,
         'created' => true,
         'modified' => true,
