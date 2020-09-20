@@ -126,7 +126,6 @@
 <script type="text/javascript">
 	function populateCartTable () {
 		var cart = shoppingCart.listCart();
-		console.log(cart);
 		$.ajax({
 			headers: {
         		'X-CSRF-Token': csrfToken

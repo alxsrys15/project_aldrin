@@ -19,13 +19,20 @@
         <tbody>
             <?php foreach ($transactions as $transaction): ?>
             <tr>
-                <td>USER</td>
+                <td><?= $transaction->user->first_name ?> <?= $transaction->user->last_name ?></td>
                 <td>P <?= $this->Number->format($transaction->total_price) ?></td>
                 <td><?= $transaction->status->name ?></td>
                 <td><?= $transaction->transaction_type->name ?></td>
                 <td class="actions">
-                    <?= $this->Html->link('<i class="fa fa-eye" aria-hidden="true"></i>', ['prefix' => 'admin', 'controller' => 'Transactions', 'action' => 'view', $transaction->id], ['class' => 'btn btn-sm', 'escape' => false]) ?>
-                    <?= $this->Html->link('<i class="fa fa-edit" aria-hidden="true"></i>', ['prefix' => 'admin', 'controller' => 'Transactions', 'action' => 'edit', $transaction->id], ['class' => 'btn btn-sm', 'escape' => false]) ?>
+                    <div class="dropdown">
+                        <?= $this->Html->link('<i class="fa fa-eye" aria-hidden="true"></i>', ['prefix' => 'admin', 'controller' => 'Transactions', 'action' => 'view', $transaction->id], ['class' => 'btn btn-sm', 'escape' => false]) ?>
+                        <button class="btn btn-sm <?= $transaction->status_id === 4 ? "disabled" : "" ?>" data-toggle="dropdown"><i class="fa fa-edit" aria-hidden="true"></i></button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <?php foreach ($statuses as $status): ?>
+                            <?= $this->Html->link($status->name, ['prefix' => 'admin', 'controller' => 'Transactions', 'action' => 'changeStatus', $status->id, $transaction->id], ['class' => 'dropdown-item']) ?>
+                            <?php endforeach ?>
+                        </div>
+                    </div>
                 </td>
             </tr>
             <?php endforeach; ?>

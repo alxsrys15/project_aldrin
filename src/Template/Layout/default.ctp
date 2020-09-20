@@ -47,14 +47,15 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
                     <a class="nav-link" href="/shop">Shop</span></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Feed</span></a>
+                    <a class="nav-link" href="/feeds">Feed</span></a>
                 </li>
             </ul>
         </div>
         <ul class="navbar-nav ml-auto">
             <li class="nav-link">
-                
-                <?= $this->Html->link('<span class="badge badge-danger rounded-circle position-absolute king-badger cart-badge"></span><i class="fa fa-shopping-cart"></i>', ['prefix' => 'shop', 'controller' => 'Products', 'action' => 'cart'], ['escape' => false, 'class' => 'btn btn-link']) ?>
+                <?php if (!$this->request->session()->read('Auth.User.is_admin')): ?>
+                <?= $this->Html->link('<span class="badge badge-danger rounded-circle position-absolute king-badger cart-badge"></span><i class="fa fa-shopping-cart"></i>', ['prefix' => 'shop', 'controller' => 'Products', 'action' => 'cart'], ['escape' => false, 'class' => 'btn btn-link']) ?>    
+                <?php endif ?>
             </li>
             <?php if ($this->request->session()->read('Auth')): ?>
             <li class="nav-item dropdown no-arrow">
@@ -81,7 +82,7 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
     
 </body>
 <?= $this->Html->script('cart'); ?>
-<?= $this->fetch('script') ?>
+
 <script type="text/javascript">
     var url = '<?= $this->Url->build('/', true); ?>';
     var csrfToken = <?= json_encode($this->request->getParam('_csrfToken')) ?>;
@@ -93,4 +94,5 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
         cartBadge();
     });
 </script>
+<?= $this->fetch('script') ?>
 </html>

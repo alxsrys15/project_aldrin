@@ -16,6 +16,7 @@ namespace App\Controller;
 
 use Cake\Controller\Controller;
 use Cake\Event\Event;
+use Cake\Routing\Router;
 
 /**
  * Application Controller
@@ -58,10 +59,7 @@ class AppController extends Controller
                 'controller' => 'Users',
                 'action' => 'login'
             ],
-            'unauthorizedRedirect' => [
-                'controller' => 'Users',
-                'action' => 'login'
-            ],
+            'unauthorizedRedirect' => Router::url(['prefix' => false, 'controller' => 'Users', 'action' => 'login']),
             'authError' => false
         ]);
 

@@ -58,7 +58,7 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
               <?= $this->Html->link('Transactions', ['prefix' => 'admin', 'controller' => 'Transactions', 'action' => 'index'], ['class' => 'nav-link']) ?>
       			</li>
       			<li class="nav-item">
-        			<a class="nav-link" href="#">Feed</span></a>
+        			<?= $this->Html->link('Feeds', ['prefix' => 'admin', 'controller' => 'Feeds', 'action' => 'index'], ['class' => 'nav-link']) ?>
       			</li>
       			<li class="nav-item">
         			<a class="nav-link" href="#">Dashboards</span></a>

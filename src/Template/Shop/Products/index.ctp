@@ -7,7 +7,7 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-sm3">
+        <div class="col-sm-3">
             <div class="card">
                 <div class="card-header text-center">
                     <h5 class="panel-title">PRODUCT CATEGORIES</h5>

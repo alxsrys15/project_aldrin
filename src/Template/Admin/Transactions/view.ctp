@@ -3,8 +3,80 @@
  * @var \App\View\AppView $this
  * @var \App\Model\Entity\Transaction $transaction
  */
+// pr($transaction);die();
 ?>
-<div class="transactions view large-9 medium-8 columns content">
+
+<div class="row">
+    <div class="col-sm-3">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="panel-title">CLIENT DETAILS</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>Client Name: <?= $transaction->user->first_name .' '. $transaction->user->last_name ?></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="panel-title">SHIPPING ADDRESS</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>Street: <?= $transaction->street ?></p>
+                        <p>Barangay: <?= $transaction->barangay ?></p>
+                        <p>City/Municipality: <?= $transaction->city ?></p>
+                        <p>Shipping Fee: P <?= number_format($transaction->shipping_fee, 2) ?></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-9">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="panel-title">TRANSACTION DETAILS</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <p>Transaction Type: <?= $transaction->transaction_type->name ?></p>
+                        <p>Status: <?= $transaction->status->name ?></p>
+                    </div>
+                    <div class="col-sm-6">
+                        <p>Total:P <?= number_format($transaction->total_price, 2) ?></p>
+                    </div>
+                </div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Product Name</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($transaction->transaction_details as $detail): ?>
+                            <tr>
+                                <td><?= $detail->product->name ?></td>
+                                <td>P <?= number_format($detail->product->price, 2) ?></td>
+                                <td><?= $detail->total_qty ?></td>
+                                <td>P <?= number_format($detail->total_qty * $detail->product->price, 2) ?></td>
+                            </tr>
+                        <?php endforeach ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- <div class="transactions view large-9 medium-8 columns content">
     <h3><?= h($transaction->id) ?></h3>
     <table class="vertical-table">
         <tr>
@@ -89,4 +161,4 @@
         </table>
         <?php endif; ?>
     </div>
-</div>
+</div> -->
