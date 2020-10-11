@@ -29,6 +29,7 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
     <?= $this->Html->css('bootstrap.min.css') ?>
     <?= $this->Html->script('jquery.min.js') ?> 
     <?= $this->Html->script('bootstrap.bundle.min.js') ?>
+
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/bs-stepper/dist/js/bs-stepper.min.js"></script>
     <?= $this->Html->script('https://cdn.jsdelivr.net/npm/sweetalert2@9') ?>
@@ -86,7 +87,7 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
     
 </body>
 <?= $this->Html->script('cart'); ?>
-
+<?= $this->Html->script('bs-custom-file-input.min.js') ?>
 <script type="text/javascript">
     var url = '<?= $this->Url->build('/', true); ?>';
     var csrfToken = <?= json_encode($this->request->getParam('_csrfToken')) ?>;

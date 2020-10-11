@@ -16,7 +16,7 @@
             <input type="file" class="custom-file-input" id="customFile" multiple="" accept="image/x-png,image/gif,image/jpeg" name="images[]" required>
             <label class="custom-file-label" for="customFile">Choose images</label>
         </div>
-        <?= $this->Form->button('Add Product', ['type' => 'submit', 'class' => 'btn btn-dark mt-3']) ?>
+        <?= $this->Form->button('Add Feed', ['type' => 'submit', 'class' => 'btn btn-dark mt-3']) ?>
     </div>
     <div class="col-sm-6">
         <h5>Images Preview</h5>

@@ -6,10 +6,7 @@ foreach ($items as $item) {
 ?>
 
 <div class="container">
-	<h4>Thank you for shopping with us.</h4>
-	<?php if ($transaction_type != "1"): ?>
-	<p>Please save this <?= $this->Html->link('LINK', ['prefix' => 'shop', 'controller' => 'products', 'action' => 'orderTracker', '?' => ['token' => $token]]) ?> to track your order.</p>
-	<?php endif ?>
+	<h4>Track you order</h4>
 	<p class="mb-4">Here is your order summary.</p>
 	<div class="row">
 		<div class="col-lg-8 p-3 bg-white rounded shadow-sm mb-3">
@@ -56,6 +53,14 @@ foreach ($items as $item) {
 			<div class="p-4">
 				<ul class="list-unstyled mb-4">
 					<li class="d-flex justify-content-between py-3 border-bottom">
+						<strong class="text-muted">Order Status </strong>
+						<strong id="total-cart"><?= $transaction->status->name ?></strong>
+					</li>
+					<li class="d-flex justify-content-between py-3 border-bottom">
+						<strong class="text-muted">Order Type </strong>
+						<strong id="total-cart"><?= $transaction->transaction_type->name ?></strong>
+					</li>
+					<li class="d-flex justify-content-between py-3 border-bottom">
 						<strong class="text-muted">Order Subtotal </strong>
 						<strong id="total-cart">P<?= number_format($total, 2) ?></strong>
 					</li>
@@ -74,13 +79,3 @@ foreach ($items as $item) {
 		</div>
 	</div>
 </div>
-
-<script type="text/javascript">
-	var success = '<?= $this->request->getQuery('success') ?>';
-	$(document).ready(function () {
-		if (success) {
-			shoppingCart.clearCart();
-			cartBadge();
-		}
-	});
-</script>

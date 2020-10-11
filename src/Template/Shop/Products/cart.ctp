@@ -65,6 +65,10 @@
 	              		<?php endforeach ?>
 	              	</select>
 	            </div>
+	            <div class="custom-file" style="display: none" id="uploader-container">
+		           	<input type="file" class="custom-file-input" id="customFile" accept="image/x-png,image/gif,image/jpeg" name="image" form="cart-form">
+		            <label class="custom-file-label" for="customFile">Choose images</label>
+		        </div>
 			</div>
 			<div class="bg-light rounded-pill px-4 py-3 text-uppercase font-weight-bold">Shipping Address</div>
 			<div class="p-4">
@@ -112,7 +116,7 @@
 	</div>
 </div>
 
-<?= $this->Form->create(null, ['id' => 'cart-form']) ?>
+<?= $this->Form->create(null, ['id' => 'cart-form', 'enctype' => 'multipart/form-data']) ?>
 <?= $this->Form->control('payment_type', ['type' => 'hidden']) ?>
 <?= $this->Form->control('items', ['type' => 'hidden']) ?>
 <?= $this->Form->control('street_address', ['type' => 'hidden']) ?>
@@ -156,6 +160,13 @@
 
 	$('#payment-select').on('change', function () {
 		$('#payment-type').val($(this).val());
+		if ($(this).val() == "Bank Transfer") {
+			$('#uploader-container').show();
+			$('#customFile').attr('required', true);
+		} else {
+			$('#uploader-container').hide();
+			$('#customFile').removeAttr('required');
+		}
 	});
 
 	$(document).ready(function () {
@@ -165,6 +176,9 @@
 		populateCartTable();
 		populateOrderSummary();
 		$('#payment-select').trigger('change');
+		$('#customFile').on('change', function (e) {
+			$(this).next('.custom-file-label').html(e.target.files[0].name);
+		});
 		$('.btn-checkout').on('click', function () {
 			var cart = shoppingCart.listCart();
 			if (cart.length > 0) {
@@ -183,6 +197,16 @@
 				$('#barangay').val($('#brgy').val());
 				$('#city').val($('#cty').val());
 				$('#province').val($('#prov').val());
+				if ($('#payment-type').val() == "Bank Transfer") {
+					if($('#customFile').val() == "") {
+						Swal.fire(
+			                'Error!',
+			                'Please provide an image of your bank deposit',
+			                'error'
+			            );
+			            return false;
+					}
+				}
 				$('#cart-form').trigger('submit');
 			} else {
 				Swal.fire(

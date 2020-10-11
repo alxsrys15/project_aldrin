@@ -50,6 +50,9 @@
                     </div>
                     <div class="col-sm-6">
                         <p>Total:P <?= number_format($transaction->total_price, 2) ?></p>
+                        <?php if ($transaction->transaction_type_id == 3): ?>
+                        <p>Payment Image: <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#imageModal">View</button></p>
+                        <?php endif ?>
                     </div>
                 </div>
                 <table class="table">
@@ -72,6 +75,18 @@
                         <?php endforeach ?>
                     </tbody>
                 </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="imageModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <?= $this->Html->image('payment_images/'.$transaction->payment_image, ['class' => 'img-fluid']) ?>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>

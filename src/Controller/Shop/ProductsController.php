@@ -157,7 +157,6 @@ class ProductsController extends AppController
     public function cart () {
         $payment_types = $this->Products->TransactionDetails->Transactions->TransactionTypes->find('list');
         if ($this->request->is('post')) {
-            // pr($this->request->data);die();
             $payment_type = $this->request->getData()['payment_type'];
             $items = json_decode($this->request->getData()['items'], true);
             $shipping_address = [
@@ -169,6 +168,10 @@ class ProductsController extends AppController
 
             if ($payment_type == "PayPal") {
                 $this->processPaypal($items, $shipping_address);
+            } else if ($payment_type == "COD") {
+                $this->processCOD($items, $shipping_address);
+            } else {
+                $this->processBankTransfer($items, $shipping_address, $this->request->data['image']);
             }
         }
         $this->set(compact('payment_types'));
@@ -179,6 +182,24 @@ class ProductsController extends AppController
             $cart = json_decode($this->request->data['data'], true);
             $this->set(compact('cart'));
             $this->render('cart_table');
+        }
+    }
+
+    private function processBankTransfer ($items, $shipping_address, $image) {
+        $jwt = new JWT('secret', 'HS256', 3600, 10);
+        if (!empty($items)) {
+            if (in_array(pathinfo($image['name'], PATHINFO_EXTENSION), ['jpg', 'jpeg', 'png'])) {
+                if (move_uploaded_file($image['tmp_name'], WWW_ROOT . 'img/payment_images/' . $image['name'])) {
+                    return $this->redirect(['prefix' => 'shop','controller' => 'products', 'action' => 'completeOrder', '?' => ['order_details' => $jwt->encode(['items' => $items, 'shipping_address' => $shipping_address, 'image' => $image['name']]), 'success' => true, 'transaction_type_id' => '3', 'token' => '123']]);
+                }
+            }
+        }
+    }
+
+    private function processCOD ($items, $shipping_address) {
+        $jwt = new JWT('secret', 'HS256', 3600, 10);
+        if (!empty($items)) {
+            return $this->redirect(['prefix' => 'shop','controller' => 'products', 'action' => 'completeOrder', '?' => ['order_details' => $jwt->encode(['items' => $items, 'shipping_address' => $shipping_address]), 'success' => true, 'transaction_type_id' => '2', 'token' => '123']]);
         }
     }
 
@@ -232,6 +253,13 @@ class ProductsController extends AppController
         }
     }
 
+    private function generateToken ($transaction_type_id) {
+        $prefix = $transaction_type_id == "2" ? "COD" : "BANK";
+        $u_id = uniqid($prefix, true);
+        $token_exist = $this->Transactions->exists(['paypal_token' => $u_id]);
+        return $token_exist ? generateToken($transaction_type_id) : $u_id;
+    }
+
     public function completeOrder () {
         $this->loadModel('Transactions');
         $jwt = new JWT('secret', 'HS256', 3600, 10);
@@ -244,9 +272,14 @@ class ProductsController extends AppController
                 $items = json_decode(json_encode($order_details['items']), true);
                 $shipping_address = json_decode(json_encode($order_details['shipping_address']), true);
                 $token_check = $this->Transactions->exists(['paypal_token' => $this->request->getQuery()['token']]);
+                $image = isset($order_details['image']) ? $order_details['image'] : null;
+                $transaction_type = $this->request->getQuery()['transaction_type_id'];
+                $token = "";
                 if (!$token_check) {
+                    
                     $total = 0;
                     $newOrderDetails = [];
+                    // pr($items);die();
                     foreach ($items as $i) {
                         $total += $i['total'];
                         $newOrderDetails[] = [
@@ -258,26 +291,64 @@ class ProductsController extends AppController
 
                     $newOrder = [
                         'user_id' => $this->Auth->User('id'),
-                        'total' => (int) $total,
-                        'transaction_type_id' => $this->request->getQuery()['transaction_type_id'],
-                        'status_id' => 2,
-                        'paypal_token' => $this->request->getQuery()['token'],
+                        'total_price' => (int) $total,
+                        'transaction_type_id' => $transaction_type,
+                        'status_id' => $transaction_type == "1" ? 2 : 1,
+                        'paypal_token' => $transaction_type == "1" ? $this->request->getQuery()['token'] : $this->generateToken($transaction_type),
                         'transaction_details' => $newOrderDetails,
-                        'shipping_fee' => 100
+                        'shipping_fee' => 100,
+                        'payment_image' => $image
                     ];
                     $newOrder = array_merge($newOrder, $shipping_address);
                     
                     $newOrder = $this->Transactions->newEntity($newOrder, ['associated' => 'TransactionDetails']);
                     
                     if ($this->Transactions->save($newOrder, ['associated' => 'TransactionDetails'])) {
+                        $token = $newOrder['paypal_token'];
                         $this->adjustStock($items);
                     } else {
                         pr($newOrder);die();
                     }
                 }
-                $this->set(compact('items', 'shipping_fee'));
+                $this->set(compact('items', 'shipping_fee', 'transaction_type', 'token'));
             }
         }
+    }
+
+    public function orderTracker () {
+        $this->loadModel('Transactions');
+        $items = [];
+        if ($this->request->is('get')) {
+            $token = $this->request->getQuery('token');
+            $transaction = $this->Transactions->find('all', [
+                'contain' => [
+                    'TransactionDetails',
+                    'TransactionDetails.Products',
+                    'TransactionDetails.ProductStocks',
+                    'TransactionDetails.ProductStocks.Sizes',
+                    'Statuses',
+                    'TransactionTypes'
+                ],
+                'conditions' => [
+                    'paypal_token' => $token
+                ]
+            ])
+            ->first();
+            if ($transaction) {
+                foreach ($transaction->transaction_details as $detail) {
+                    $product_images = explode(',', $detail->product->imgs);
+                    $items[] = [
+                        'price' => $detail->product->price,
+                        'count' => $detail->total_qty,
+                        'image' => $product_images[0],
+                        'name' => $detail->product->name,
+                        'size_name' => $detail->product_stock->size->name
+                    ];
+                }
+            }
+        }
+
+        $this->set(compact('items', 'transaction'));
     }
 
     private function adjustStock($items = []) {
