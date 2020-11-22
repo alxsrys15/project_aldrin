@@ -13,7 +13,7 @@
 			
 		</canvas>
 	</div>
-	<div class="col-6" style="margin-top: 70px">
+	<div class="col-6" style="margin-top: 86px">
 		<canvas id="stock-chart">
 			
 		</canvas>

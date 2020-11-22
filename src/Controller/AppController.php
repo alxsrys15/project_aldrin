@@ -55,10 +55,7 @@ class AppController extends Controller
                     ]
                 ]
             ],
-            'loginAction' => [
-                'controller' => 'Users',
-                'action' => 'login'
-            ],
+            'loginAction' => '/login',
             'unauthorizedRedirect' => Router::url(['prefix' => false, 'controller' => 'Users', 'action' => 'login']),
             'authError' => false
         ]);
