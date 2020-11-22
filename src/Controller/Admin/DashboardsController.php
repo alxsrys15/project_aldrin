@@ -16,6 +16,7 @@ class DashboardsController extends AppController
         parent::initialize();
         $this->viewBuilder()->setLayout('admin');
         $this->loadModel('Transactions');
+        $this->loadModel('ProductStocks');
     }
     /**
      * Index method
@@ -114,8 +115,54 @@ class DashboardsController extends AppController
     }
 
     public function salesPerYear () {
+        $this->autoRender = false;
         if ($this->request->is('ajax')) {
             $year = $this->request->data['year'];
+            $query = $this->Transactions->find();
+            $month = $query->func()->monthname([
+                'created' => 'identifier'
+            ]);
+            $query->select([
+                'total' => $query->func()->sum('total_price'),
+                'month' => $month
+            ])
+            ->group('month')
+            ->order(['month' => 'DESC'])
+            ->where(['year(created)' => $year]);
+
+            $data = [];
+            foreach ($query as $q) {
+                $data[] = [
+                    'label' => $q->month,
+                    'data' => $q->total
+                ];
+            }
+            $this->response->type('json');
+            $this->response->body(json_encode($data));
+            return $this->response;
+        }
+    }
+
+    public function getStocks () {
+        $this->autoRender = false;
+        if ($this->request->is('ajax')) {
+            $query = $this->ProductStocks->find('all', [
+                'contain' => 'Products'
+            ]);
+            $query->select([
+                'total' => $query->func()->sum('sku'),
+                'Products.name'
+            ]);
+            $data = [];
+            foreach ($query as $q) {
+                $data[] = [
+                    'label' => $q->product->name,
+                    'data' => $q->total
+                ];
+            }
+            $this->response->type('json');
+            $this->response->body(json_encode($data));
+            return $this->response;
         }
     }
 }

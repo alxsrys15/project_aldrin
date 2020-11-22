@@ -21,6 +21,8 @@ use Cake\Validation\Validator;
  * @method \App\Model\Entity\TransactionDetail patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
  * @method \App\Model\Entity\TransactionDetail[] patchEntities($entities, array $data, array $options = [])
  * @method \App\Model\Entity\TransactionDetail findOrCreate($search, callable $callback = null, $options = [])
+ *
+ * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
 class TransactionDetailsTable extends Table
 {
@@ -37,6 +39,8 @@ class TransactionDetailsTable extends Table
         $this->setTable('transaction_details');
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
+
+        $this->addBehavior('Timestamp');
 
         $this->belongsTo('Products', [
             'foreignKey' => 'product_id',

@@ -3,12 +3,18 @@
 		<div class="form-group col-6">
 			<label>Select year</label>
 			<select id="sales-year" class="form-control">
+				<option value="2019">2019</option>
 				<?php foreach ($years as $year): ?>
 				<option value="<?= $year->year ?>"><?= $year->year ?></option>
 				<?php endforeach ?>
 			</select>
 		</div>
-		<canvas id="chart#1">
+		<canvas id="sales-chart">
+			
+		</canvas>
+	</div>
+	<div class="col-6" style="margin-top: 70px">
+		<canvas id="stock-chart">
 			
 		</canvas>
 	</div>
@@ -18,56 +24,38 @@
 <?= $this->Html->script('Chart.min') ?>
 
 <script type="text/javascript">
-	function populateChart (canvas_id) {
-		var ctx = document.getElementById('chart#1');
-		var salesChart = new Chart(ctx, {
-		    type: 'bar',
-		    data: {
-		        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-		        datasets: [{
-		            label: 'Sales',
-		            data: [12, 19, 3, 5, 2, 3],
-		            backgroundColor: [
-		                'rgba(255, 99, 132, 0.2)',
-		                'rgba(54, 162, 235, 0.2)',
-		                'rgba(255, 206, 86, 0.2)',
-		                'rgba(75, 192, 192, 0.2)',
-		                'rgba(153, 102, 255, 0.2)',
-		                'rgba(255, 159, 64, 0.2)',
-		                'rgba(255, 99, 132, 0.2)',
-		                'rgba(54, 162, 235, 0.2)',
-		                'rgba(255, 206, 86, 0.2)',
-		                'rgba(75, 192, 192, 0.2)',
-		                'rgba(153, 102, 255, 0.2)',
-		                'rgba(255, 159, 64, 0.2)'
-		            ],
-		            borderColor: [
-		                'rgba(255, 99, 132, 1)',
-		                'rgba(54, 162, 235, 1)',
-		                'rgba(255, 206, 86, 1)',
-		                'rgba(75, 192, 192, 1)',
-		                'rgba(153, 102, 255, 1)',
-		                'rgba(255, 159, 64, 1)',
-		                'rgba(255, 99, 132, 0.2)',
-		                'rgba(54, 162, 235, 0.2)',
-		                'rgba(255, 206, 86, 0.2)',
-		                'rgba(75, 192, 192, 0.2)',
-		                'rgba(153, 102, 255, 0.2)',
-		                'rgba(255, 159, 64, 0.2)'
-		            ],
-		            borderWidth: 1
-		        }]
-		    },
-		    options: {
-		        scales: {
-		            yAxes: [{
-		                ticks: {
-		                    beginAtZero: true
-		                }
-		            }]
-		        }
-		    }
-		});
+	var salesChart = null;
+	var stocksChart = null;
+	var bestProdChart = null;
+	function populateChart (canvas_id, chart, data = null, type, label) {
+		if (chart) {
+			chart.data.labels = data.map(d => d.label);
+			chart.data.datasets[0].data = data.map(d => d.data);
+			chart.update();
+		} else {
+			var ctx = $(canvas_id);
+			chart = new Chart(ctx, {
+			    type: type,
+			    data: {
+			        labels: data.map(d => d.label),
+			        datasets: [{
+			            label: label,
+			            data: data.map(d => d.data),
+			            borderWidth: 1,
+			            backgroundColor: 'rgba(14, 194, 230, 0.1)'
+			        }]
+			    },
+			    options: {
+			        scales: {
+			            yAxes: [{
+			                ticks: {
+			                    beginAtZero: true
+			                }
+			            }]
+			        }
+			    }
+			});
+		}
 	}
 	$(document).ready(function () {
 		$('#sales-year').on('change', function () {
@@ -82,9 +70,21 @@
                     year: year
                 },
                 success: function (data) {
-                    console.log(data);
+                    populateChart('#sales-chart', salesChart, data, 'line', 'Sales');
                 }
             });
 		});
+		$.ajax({
+            headers: {
+                'X-CSRF-Token': csrfToken
+            },
+            url: url + 'admin/dashboards/getStocks',
+            type: 'post',
+            data: {},
+            success: function (data) {
+                populateChart('#stock-chart', stocksChart, data, 'bar', 'Stocks');
+            }
+        });
+		$('#sales-year').trigger('change');
 	});
 </script>

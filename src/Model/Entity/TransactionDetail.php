@@ -11,6 +11,7 @@ use Cake\ORM\Entity;
  * @property int|null $product_stocks_id
  * @property int|null $total_qty
  * @property int|null $transaction_id
+ * @property \Cake\I18n\FrozenTime|null $created
  *
  * @property \App\Model\Entity\Product $product
  * @property \App\Model\Entity\ProductStock $product_stock
@@ -32,6 +33,7 @@ class TransactionDetail extends Entity
         'product_stocks_id' => true,
         'total_qty' => true,
         'transaction_id' => true,
+        'created' => true,
         'product' => true,
         'product_stock' => true,
         'transaction' => true,
