@@ -10,7 +10,7 @@ class UserMailer extends Mailer
 {
 	public function welcome ($user) {
 		$this->to($user->email)
-			->from(['no-reply@loukhaclothing.store' => 'Welcome'])
+			->from(['aldrinproject101@gmail.com' => 'Welcome'])
 			->subject('Welcome')
 			->setViewVars(['user' => $user])
 			->emailFormat('html')
