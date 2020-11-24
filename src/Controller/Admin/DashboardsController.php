@@ -153,7 +153,7 @@ class DashboardsController extends AppController
                 'total' => $query->func()->sum('sku'),
                 'Products.name'
             ])
-            ->group('ProductsStocks.id');
+            ->group('Products.name');
             $data = [];
             foreach ($query as $q) {
                 $data[] = [

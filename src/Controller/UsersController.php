@@ -113,6 +113,10 @@ class UsersController extends AppController
     public function login () {
         if ($this->request->is('post')) {
             $q = $this->Users->findByEmail($this->request->data['email'])->first();
+            if (!$q) {
+                $this->Flash->error(__('Account does not exist'));
+                return $this->redirect('/login');
+            }
             if ($q->is_active) {
                 $user = $this->Auth->identify();
                 if ($user) {
