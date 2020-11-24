@@ -71,7 +71,8 @@ class UsersTable extends Table
         $validator
             ->email('email')
             ->requirePresence('email', 'create')
-            ->notEmptyString('email');
+            ->notEmptyString('email')
+            ->add('email', 'unique', ['rule' => 'validateUnique', 'provider' => 'table', 'message' => 'Email already registered']);
 
         $validator
             ->scalar('password')
@@ -138,7 +139,7 @@ class UsersTable extends Table
      */
     public function buildRules(RulesChecker $rules)
     {
-        $rules->add($rules->isUnique(['email'], 'Email address already registered.'));
+        $rules->add($rules->isUnique(['email']));
 
         return $rules;
     }

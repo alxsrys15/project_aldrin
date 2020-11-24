@@ -155,7 +155,6 @@ class UsersController extends AppController
                 $this->redirect(['action' => 'login']);
             }
         }
-        pr($errors);
         $this->set(compact('errors'));
     }
 
