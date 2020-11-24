@@ -38,7 +38,7 @@ $cakeDescription = 'Loukha Clothing';
 </head>
 <body>
     <nav class="navbar navbar-expand navbar-dark bg-dark topbar mb-4 static-top shadow">
-        <a href="/" class="navbar-brand">NAME NG BENEF</a>
+        <a href="/" class="navbar-brand">LOUKHA</a>
         <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
             <i class="fa fa-bars"></i>
         </button>
