@@ -1,5 +1,5 @@
 <div class="container">
-	<h4>Welcome to NAME NG BENEF.</h4>
+	<h4>Welcome to LOUKHA CLOTHING</h4>
 	<p>
 		Please click this link to verify your account.
 	</p>
