@@ -65,6 +65,7 @@ $cakeDescription = 'Loukha Clothing';
                     </span>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                    <?= $this->Html->link('<i class="fas fa-user-alt fa-sm fa-fw mr-2 text-gray-400"></i> Profile', '/profile', ['escape' => false, 'class' => 'dropdown-item']) ?>
                     <?= $this->Html->link('<i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i> Logout', ['prefix' => false,'controller' => 'Users', 'action' => 'logout'], ['escape' => false, 'class' => 'dropdown-item']) ?>
                 </div>
             </li>
