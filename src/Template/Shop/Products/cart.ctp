@@ -66,9 +66,10 @@
 	              	</select>
 	            </div>
 	            <div class="custom-file" style="display: none" id="uploader-container">
-		           	<input type="file" class="custom-file-input" id="customFile" accept="image/x-png,image/gif,image/jpeg" name="image" form="cart-form">
+		           	<input type="file" class="custom-file-input" id="customFile" accept="image/x-png,image/gif,image/jpeg" name="image" form="cart-form" style="z-index: 1">
 		            <label class="custom-file-label" for="customFile">Choose images</label>
 		        </div>
+		        <button class="btn btn-dark btn-sm bank-info mt-1" style="display: none" data-toggle="modal" data-target="#bank-info-modal">Bank info</button>
 			</div>
 			<div class="bg-light rounded-pill px-4 py-3 text-uppercase font-weight-bold">Shipping Address</div>
 			<div class="p-4">
@@ -111,6 +112,23 @@
               		</li>
 				</ul>
 				<a href="#" class="btn btn-primary rounded-pill py-2 btn-block btn-checkout">Procceed to checkout</a>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="modal fade" id="bank-info-modal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Bank Details</h5>
+			</div>
+			<div class="modal-body">
+				<p>Account Number: XXXX-XXXX-XX</p>
+				<p>Account Name: Juan Dela Cruz</p>
+				<p>Bank: Banco de Oro</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
 			</div>
 		</div>
 	</div>
@@ -161,9 +179,11 @@
 	$('#payment-select').on('change', function () {
 		$('#payment-type').val($(this).val());
 		if ($(this).val() == "Bank Transfer") {
+			$('.bank-info').show();
 			$('#uploader-container').show();
 			$('#customFile').attr('required', true);
 		} else {
+			$('.bank-info').hide();
 			$('#uploader-container').hide();
 			$('#customFile').removeAttr('required');
 		}

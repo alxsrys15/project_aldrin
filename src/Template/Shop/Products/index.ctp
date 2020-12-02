@@ -26,11 +26,18 @@
         <div class="col-sm-9">
             <div class="row">
                 <?php foreach ($products as $product): ?>
-                <?php $images = explode(',', $product->imgs) ?>
-                <div class="col-sm-4>">
-                    <div class="card shadow-lg rounded mb-3" style="width: 18rem;">
+                <?php 
+                    $images = explode(',', $product->imgs); 
+                    $image = 'product_images/'.$images[0];
+                    if (!file_exists(WWW_ROOT . '/img/product_images/' . $images[0])) {
+                        $image = 'assets/default-image.jpg';
+                    }
+                ?>
+
+                <div class="col-sm-4">
+                    <div class="card">
                         <?= $this->Html->link(
-                            $this->Html->image('product_images/' . $images[0], ['class' => 'card-img-top']),
+                            $this->Html->image($image, ['class' => 'card-img-top', 'style' => ['height: 180px']]),
                             ['controller' => 'products', 'action' => 'view', $product->id],
                             ['escape' => false]
                         )
@@ -48,6 +55,17 @@
                     
                 </div>
                 <?php endforeach ?>
+            </div>
+            <div class="row mt-3">
+                <div class="col-12">
+                    <nav>
+                        <ul class="pagination" id="pagination">
+                            <?= $this->Paginator->prev('Previous') ?>
+                            <?= $this->Paginator->numbers(['modulus' => 2]) ?>
+                            <?= $this->Paginator->next('Next') ?>
+                        </ul>
+                    </nav>
+                </div>
             </div>
         </div>
     </div>

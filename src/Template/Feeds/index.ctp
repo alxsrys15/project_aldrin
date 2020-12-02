@@ -27,9 +27,9 @@ foreach ($feeds as $key => $feed) {
     }
 </style>
 
-<div style="height: 70vh; overflow-y: auto; overflow-x: hidden;">
-    <div class="row" style="height: 100%">
-        <div class="col-sm-6 offset-sm-3" style="height: 100%">
+<div>
+    <div class="row">
+        <div class="col-sm-6 offset-sm-3">
             <?php foreach ($feeds as $feed): ?>
             <?php $images = explode(',', $feed->img_name) ?>
             <div class="card mb-2">

@@ -1,8 +1,7 @@
 <?php
-namespace App\Controller\Admin;
+namespace App\Controller\Profile;
 
 use App\Controller\AppController;
-use Cake\Event\Event;
 
 /**
  * Transactions Controller
@@ -18,28 +17,20 @@ class TransactionsController extends AppController
      *
      * @return \Cake\Http\Response|null
      */
-
-    public function beforeFilter (Event $event) {
-        parent::beforeFilter($event);
-    }
-
-    public function initialize () {
-        parent::initialize();
-        $this->viewBuilder()->setLayout('admin');
-    }
-
     public function index()
     {
-        $statuses = $this->Transactions->Statuses->find('all');
         $this->paginate = [
             'contain' => ['Users', 'Statuses', 'TransactionTypes'],
             'order' => [
                 'created' => 'DESC'
+            ],
+            'conditions' => [
+                'user_id' => $this->Auth->User('id')
             ]
         ];
-        $transactions = $this->paginate($this->Transactions);
+        $transactions = $this->paginate($this->Transactions, ['limit' => 5]);
 
-        $this->set(compact('transactions', 'statuses'));
+        $this->set(compact('transactions'));
     }
 
     /**
@@ -52,7 +43,7 @@ class TransactionsController extends AppController
     public function view($id = null)
     {
         $transaction = $this->Transactions->get($id, [
-            'contain' => ['Users', 'Statuses', 'TransactionTypes', 'TransactionDetails', 'TransactionDetails.Products'],
+            'contain' => ['Users', 'Statuses', 'TransactionTypes', 'TransactionDetails'],
         ]);
 
         $this->set('transaction', $transaction);
@@ -125,17 +116,6 @@ class TransactionsController extends AppController
             $this->Flash->error(__('The transaction could not be deleted. Please, try again.'));
         }
 
-        return $this->redirect(['action' => 'index']);
-    }
-
-    public function changeStatus ($status_id, $transaction_id) {
-        if ($transaction_id) {
-            $transaction = $this->Transactions->get($transaction_id);
-            $transaction->status_id = $status_id;
-            if ($this->Transactions->save($transaction)) {
-                $this->Flash->success('Transaction updated');
-            }
-        }
         return $this->redirect(['action' => 'index']);
     }
 }

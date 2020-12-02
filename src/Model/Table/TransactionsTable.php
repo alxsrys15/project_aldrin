@@ -27,6 +27,7 @@ use Cake\Validation\Validator;
  */
 class TransactionsTable extends Table
 {
+    use MailerAwareTrait;
     /**
      * Initialize method
      *
@@ -122,5 +123,14 @@ class TransactionsTable extends Table
         $rules->add($rules->existsIn(['transaction_type_id'], 'TransactionTypes'));
 
         return $rules;
+    }
+
+    public function afterSave ($event, $entity) {
+        if ($entity->isNew()) {
+            $transaction = $this->get($entity->id, [
+                'contain' => ['Users']
+            ]);
+            $this->getMailer('Transaction')->send('order', [$transaction]);
+        }
     }
 }

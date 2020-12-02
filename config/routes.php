@@ -99,6 +99,7 @@ Router::scope('/', function (RouteBuilder $routes) {
 Router::prefix('admin', function (RouteBuilder $routes) {
     // All routes here will be prefixed with `/admin`
     // And have the prefix => admin route element added.
+    $routes->applyMiddleware('csrf');
     $routes->connect('/', ['controller' => 'Products', 'action' => 'index']);
     $routes->fallbacks(DashedRoute::class);
 });
@@ -106,7 +107,15 @@ Router::prefix('admin', function (RouteBuilder $routes) {
 Router::prefix('shop', function (RouteBuilder $routes) {
     // All routes here will be prefixed with `/admin`
     // And have the prefix => admin route element added.
+    $routes->applyMiddleware('csrf');
     $routes->connect('/', ['controller' => 'Products', 'action' => 'index']);
+    $routes->fallbacks(DashedRoute::class);
+});
+Router::prefix('profile', function (RouteBuilder $routes) {
+    // All routes here will be prefixed with `/admin`
+    // And have the prefix => admin route element added.
+    $routes->applyMiddleware('csrf');
+    $routes->connect('/', ['controller' => 'Users', 'action' => 'index']);
     $routes->fallbacks(DashedRoute::class);
 });
 /*

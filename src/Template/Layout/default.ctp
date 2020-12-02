@@ -37,7 +37,7 @@ $cakeDescription = 'Loukha Clothing';
     <?= $this->fetch('css') ?>
 </head>
 <body>
-    <nav class="navbar navbar-expand navbar-dark bg-dark topbar mb-4 static-top shadow">
+    <nav class="navbar navbar-expand navbar-dark bg-dark topbar mb-4 sticky-top shadow">
         <a href="/" class="navbar-brand">LOUKHA</a>
         <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
             <i class="fa fa-bars"></i>
@@ -66,6 +66,7 @@ $cakeDescription = 'Loukha Clothing';
                     </span>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                    <?= $this->Html->link('<i class="fas fa-user-alt fa-sm fa-fw mr-2 text-gray-400"></i> Profile', '/profile', ['escape' => false, 'class' => 'dropdown-item']) ?>
                     <?= $this->Html->link('<i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i> Logout', ['prefix' => false,'controller' => 'Users', 'action' => 'logout'], ['escape' => false, 'class' => 'dropdown-item']) ?>
                 </div>
             </li>
@@ -78,13 +79,10 @@ $cakeDescription = 'Loukha Clothing';
         </ul>
     </nav>
     <?= $this->Flash->render() ?>
-    <div class="container">
-        
+    <main class="container" style="height: 100vh - 226px">
         <?= $this->fetch('content') ?>
-    </div>
-    <footer>
-    </footer>
-    
+    </main>
+    <?= $this->element('footer') ?>
 </body>
 <?= $this->Html->script('cart'); ?>
 <?= $this->Html->script('bs-custom-file-input.min.js') ?>

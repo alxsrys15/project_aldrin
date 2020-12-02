@@ -9,6 +9,7 @@
     <table cellpadding="0" cellspacing="0" class="table">
         <thead>
             <tr>
+                <th>Date</th>
                 <th scope="col">User</th>
                 <th scope="col">Total</th>
                 <th scope="col">Status</th>
@@ -19,6 +20,7 @@
         <tbody>
             <?php foreach ($transactions as $transaction): ?>
             <tr>
+                <td><?= $transaction->created->format('Y-m-d h:i a') ?></td>
                 <td><?= $transaction->user->first_name ?> <?= $transaction->user->last_name ?></td>
                 <td>P <?= $this->Number->format($transaction->total_price) ?></td>
                 <td><?= $transaction->status->name ?></td>
