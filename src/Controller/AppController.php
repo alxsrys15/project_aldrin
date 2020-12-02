@@ -38,6 +38,12 @@ class AppController extends Controller
      *
      * @return void
      */
+
+    public function beforeRender (Event $event) {
+        parent::beforeRender($event);
+        $this->set('Auth', $this->Auth);
+    }
+
     public function initialize()
     {
         parent::initialize();

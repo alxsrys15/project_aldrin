@@ -76,18 +76,18 @@
             	<p class="font-italic mb-4">Please provide an accurate shipping address below</p>
             	<div class="form-row">
             		<div class="col-sm-12 form-group">
-            			<input type="text" id="street" class="form-control" placeholder="Street Address">
+            			<input type="text" id="street" class="form-control" placeholder="Street Address" value="<?= $Auth->User('street_name') ?>">
             		</div>
             		<div class="col-sm-4 form-group">
-            			<input type="text" id="brgy" class="form-control" placeholder="Barangay">
+            			<input type="text" id="brgy" class="form-control" placeholder="Barangay" value="<?= $Auth->User('barangay') ?>">
             		</div>
             		<div class="col-sm-4 form-group">
             			<!-- <input type="text" id="prov" class="form-control" placeholder="Province"> -->
-            			<select id="prov" class="form-control"></select>
+            			<select id="prov" class="form-control" value="<?= $Auth->User('country') ?>"></select>
             		</div>
             		<div class="col-sm-4 form-group">
             			<!-- <input type="text" id="cty" class="form-control" placeholder="City/Municipality"> -->
-            			<select id="cty" class="form-control"></select>
+            			<select id="cty" class="form-control" value="<?= $Auth->User('city') ?>"></select>
             		</div>
             	</div>
           	</div>
@@ -188,11 +188,13 @@
 			$('#customFile').removeAttr('required');
 		}
 	});
-
+	var c = new City();
+	const user = <?= json_encode($Auth->User()) ?>;
+	c.showProvinces('#prov');
+	c.showCities(user.country,'#cty');
 	$(document).ready(function () {
-		var c = new City();
-		c.showProvinces('#prov');
-		c.showCities('#cty');
+		$('#prov').val(user.country);
+		$('#cty').val(user.city);
 		populateCartTable();
 		populateOrderSummary();
 		$('#payment-select').trigger('change');

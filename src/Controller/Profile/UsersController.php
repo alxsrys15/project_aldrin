@@ -75,6 +75,7 @@ class UsersController extends AppController
         if ($this->request->is(['patch', 'post', 'put'])) {
             $user = $this->Users->patchEntity($user, $this->request->getData(), ['validation' => false]);
             if ($this->Users->save($user)) {
+                $this->Auth->setUser($user);
                 $this->Flash->success(__('Profile updated.'));
 
                 return $this->redirect(['action' => 'index']);

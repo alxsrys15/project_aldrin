@@ -34,7 +34,7 @@
                     }
                 ?>
 
-                <div class="col-sm-4">
+                <div class="col-sm-4 mb-3">
                     <div class="card">
                         <?= $this->Html->link(
                             $this->Html->image($image, ['class' => 'card-img-top', 'style' => ['height: 180px']]),

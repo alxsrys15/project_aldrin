@@ -37,12 +37,12 @@
                         <?= $this->Form->control('barangay', ['class'=> 'form-control', 'label' => false, 'value' => $user->barangay]) ?>
                     </div>
                     <div class="col-sm-12">
-                        <label for="city" class="col-form-label">City</label>
-                        <?= $this->Form->control('city', ['class'=> 'form-control', 'label' => false, 'value' => $user->city]) ?>
+                        <label for="country" class="col-form-label">Province</label>
+                        <?= $this->Form->control('country', ['class'=> 'form-control', 'label' => false, 'default' => $user->country, 'type' => 'select']) ?>
                     </div>
                     <div class="col-sm-12">
-                        <label for="country" class="col-form-label">Country</label>
-                        <?= $this->Form->control('country', ['class'=> 'form-control', 'label' => false, 'value' => $user->country]) ?>
+                        <label for="city" class="col-form-label">City</label>
+                        <?= $this->Form->control('city', ['class'=> 'form-control', 'label' => false, 'default' => $user->city, 'type' => 'select']) ?>
                     </div>
                 </div>
             </div>
@@ -50,3 +50,17 @@
         </div>
     </div>
 </div>
+
+<?= $this->Html->script('city.min.js') ?>
+
+<script type="text/javascript">
+    var c = new City();
+    const user = <?= json_encode($user) ?>;
+    c.showProvinces('#country');
+    c.showCities(user.country,'#city');
+    $(document).ready(function () {
+        $('#country').val(user.country);
+        $('#city').val(user.city);
+        // $('#country').trigger('change');
+    });
+</script>
