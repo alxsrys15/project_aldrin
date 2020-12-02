@@ -22,7 +22,12 @@ class HomeController extends AppController
 	}
 
 	public function index () {
-
+		$this->loadModel('Products');
+		$products = $this->Products->find('all', [
+			'order' => 'rand()',
+			'limit' => 3
+		]);
+		$this->set(compact('products'));
 	}
 }
 
