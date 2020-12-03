@@ -16,6 +16,7 @@
                     </div>
                     <div class="card-body">
                         <p>Client Name: <?= $transaction->user->first_name .' '. $transaction->user->last_name ?></p>
+                        <p>Contact No: <?= $transaction->user->contact_no ?></p>
                     </div>
                 </div>
             </div>
@@ -47,6 +48,7 @@
                     <div class="col-sm-6">
                         <p>Transaction Type: <?= $transaction->transaction_type->name ?></p>
                         <p>Status: <?= $transaction->status->name ?></p>
+                        <p>Invoice: <?= $transaction->paypal_token ?></p>
                     </div>
                     <div class="col-sm-6">
                         <p>Total:P <?= number_format($transaction->total_price, 2) ?></p>

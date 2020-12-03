@@ -120,6 +120,7 @@ $images = explode(',', $product->imgs);
     var sku = <?= json_encode($sku) ?>;
     var stocks = <?= json_encode($stocks) ?>;
     var selected_stock_id = "";
+    console.log(stocks);
     $(document).ready(function () {
         $('#sizes').on('change', function () {
             const size = $(this).val();
@@ -138,14 +139,14 @@ $images = explode(',', $product->imgs);
         $('#variants').on('change', function () {
             const variant = $(this).val();
             const size = $('#sizes').val();
-            console.log(variant, size)
             const stock = stocks.filter(element => {
                 return element.size_id == size && element.variant == variant;
             });
             
             $('#quantity').attr('max', stock[0].sku);
             $('#available_items').text(stock[0].sku);
-            if (stock[0].quantity <= 0) {
+            console.log(stock)
+            if (stock[0].sku <= 0) {
                 $('#add-to-cart-btn').prop('disabled', true);
             }
         });

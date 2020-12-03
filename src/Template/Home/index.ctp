@@ -25,7 +25,7 @@
                 <?php foreach ($products as $product): ?>
                 <?php $images = explode(',', $product->imgs) ?>
                 <div class="col-sm-4 mb-3">
-                    <div class="card shadow-lg rounded mb-3" style="width: 25rem;">
+                    <div class="card shadow-lg rounded mb-3">
                         <?= $this->Html->link(
                             $this->Html->image('product_images/' . $images[0], ['class' => 'card-img-top']),
                             ['prefix'=>'shop','controller' => 'products', 'action' => 'view', $product->id],
