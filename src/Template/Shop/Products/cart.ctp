@@ -191,12 +191,15 @@
 	var c = new City();
 	const user = <?= json_encode($Auth->User()) ?>;
 	c.showProvinces('#prov');
-	c.showCities(user.country,'#cty');
+	console.log(user);
+	c.showCities(user.country || "",'#cty');
+
 	$(document).ready(function () {
-		$('#prov').val(user.country);
-		$('#cty').val(user.city);
 		populateCartTable();
 		populateOrderSummary();
+		$('#prov').val(user.country);
+		$('#cty').val(user.city);
+		
 		$('#payment-select').trigger('change');
 		$('#customFile').on('change', function (e) {
 			$(this).next('.custom-file-label').html(e.target.files[0].name);
