@@ -191,7 +191,6 @@
 	var c = new City();
 	const user = <?= json_encode($Auth->User()) ?>;
 	c.showProvinces('#prov');
-	console.log(user);
 	c.showCities(user.country || "",'#cty');
 
 	$(document).ready(function () {
