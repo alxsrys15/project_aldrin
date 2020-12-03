@@ -57,10 +57,10 @@
     var c = new City();
     const user = <?= json_encode($user) ?>;
     c.showProvinces('#country');
-    c.showCities(user.country,'#city');
+    c.showCities(user.country || "",'#city');
     $(document).ready(function () {
         $('#country').val(user.country);
         $('#city').val(user.city);
-        // $('#country').trigger('change');
+        $('#country').trigger('change');
     });
 </script>
