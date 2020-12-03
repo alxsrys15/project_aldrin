@@ -13,18 +13,18 @@
         <div class="row mx-0">
             <div class="col-sm-4 text-center">
                 Like us on: 
-                <a href="https://mdbootstrap.com/">
+                <a href="https://www.facebook.com/loukhaclothing/">
                     <i class="fab fa-facebook-f"></i>
                 </a>
             </div>
             <div class="col-sm-4 text-center">
                 Follow us on:
-                <a href="https://mdbootstrap.com/">
+                <a href="https://www.instagram.com/loukhaclothing/?hl=en">
                     <i class="fab fa-instagram"></i>
                 </a>
             </div>
             <div class="col-sm-4 text-center">
-                Follow us on:<a href="https://mdbootstrap.com/">
+                Follow us on:<a href="">
                     <i class="fab fa-twitter"></i>
                 </a>
             </div>
