@@ -11,7 +11,13 @@
 		<?php foreach ($categories as $category): ?>
 		<tr>
 			<td><?= $category->name ?></td>
-			<td></td>
+			<td>
+				<?php if ($category->is_active): ?>
+				<?= $this->Html->link('Deactivate', ['action' => 'updateCat', $category->id, 0], ['class' => 'btn btn-sm btn-success']) ?>
+				<?php else: ?>
+				<?= $this->Html->link('Activate', ['action' => 'updateCat', $category->id], ['class' => 'btn btn-sm btn-danger']) ?>
+				<?php endif ?>
+			</td>
 		</tr>
 		<?php endforeach ?>
 	</tbody>

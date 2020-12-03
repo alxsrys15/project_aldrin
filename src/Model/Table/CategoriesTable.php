@@ -58,6 +58,9 @@ class CategoriesTable extends Table
             ->maxLength('name', 45)
             ->allowEmptyString('name');
 
+        $validator
+            ->allowEmptyString('is_active');
+
         return $validator;
     }
 }

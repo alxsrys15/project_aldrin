@@ -8,6 +8,7 @@ use Cake\ORM\Entity;
  *
  * @property int $id
  * @property string|null $name
+ * @property int|null $is_active
  *
  * @property \App\Model\Entity\Product[] $products
  */
@@ -24,6 +25,7 @@ class Category extends Entity
      */
     protected $_accessible = [
         'name' => true,
+        'is_active' => true,
         'products' => true,
     ];
 }

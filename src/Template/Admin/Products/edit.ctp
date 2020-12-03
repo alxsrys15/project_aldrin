@@ -5,7 +5,11 @@
  */
 ?>
 
-
+<?php if ($product->is_active): ?>
+    <?= $this->Html->link('Deactivate', ['action' => 'updateProd', $product->id, 0], ['class' => 'btn btn-danger']) ?>
+<?php else: ?>
+    <?= $this->Html->link('Activate', ['action' => 'updateProd', $product->id], ['class' => 'btn btn-success']) ?>
+<?php endif ?>
 <?= $this->Form->create($product, ['url' => ['action' => 'edit'], 'enctype' => 'multipart/form-data']) ?>
 <div class="row">
     <div class="col-md-6">
@@ -137,7 +141,7 @@
     });
 
     $('.preview').on('click', function () {
-        // $($(this).data('input')).trigger('click');
+        $($(this).data('input')).trigger('click');
     });
 
     $('.uploader').on('change', function () {

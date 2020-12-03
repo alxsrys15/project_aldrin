@@ -52,7 +52,11 @@ class ProductsController extends AppController
      */
     public function add()
     {
-        $categories = $this->Products->Categories->find('list');
+        $categories = $this->Products->Categories->find('list' ,[
+            'conditions' => [
+                'is_active' => 1
+            ]
+        ]);
         $sizes = $this->Products->ProductStocks->Sizes->find('list');
         $product = $this->Products->newEntity();
         $upload_status = [
@@ -111,15 +115,36 @@ class ProductsController extends AppController
             ],
         ]);
 
-        $categories = $this->Products->Categories->find('list');
+        $categories = $this->Products->Categories->find('list' ,[
+            'conditions' => [
+                'is_active' => 1
+            ]
+        ]);
         $sizes = $this->Products->ProductStocks->Sizes->find('list');
 
         $product['images'] = explode(',', $product->imgs);
+        $upload_status = [
+            'success' => false,
+            'message' => ""
+        ];
+        $uploaded_images = [];
         if ($this->request->is(['patch', 'post', 'put'])) {
+            $images = $this->request->data['images'];
+            foreach ($images as $key => $image) {
+                if (in_array(pathinfo($image['name'], PATHINFO_EXTENSION), ['jpg', 'jpeg', 'png'])) {
+                    if (move_uploaded_file($image['tmp_name'], WWW_ROOT . 'img/product_images/' . $image['name'])) {
+                        $upload_status['success'] = true;
+                        $uploaded_images[$key] = $image['name'];
+                    }
+                }
+            }
             unset($this->request->data['images']);
-            unset($product['images']);
+            $new_images_keys = array_keys($uploaded_images);
+            foreach ($new_images_keys as $k) {
+                $product['images'][$k] = $uploaded_images[$k];
+            }
+            $this->request->data['imgs'] = implode(',', $product['images']);
             $product = $this->Products->patchEntity($product, $this->request->getData(), ['associated' => ['ProductStocks']]);
-            // pr($product);die();
             if ($this->Products->save($product, ['associated' => ['ProductStocks']])) {
                 $this->Flash->success(__('The product has been saved.'));
 
@@ -148,5 +173,16 @@ class ProductsController extends AppController
         }
 
         return $this->redirect(['action' => 'index']);
+    }
+
+    public function updateProd ($id, $is_active = 1) {
+        if ($id) {
+            $product = $this->Products->get($id);
+            $product->is_active = $is_active;
+            if ($this->Products->save($product)) {
+                $this->Flash->success('Product updated');
+                return $this->redirect(['action' => 'edit', $id]);
+            }
+        }
     }
 }

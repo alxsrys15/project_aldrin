@@ -79,7 +79,7 @@ $cakeDescription = 'Loukha Clothing';
         </ul>
     </nav>
     <?= $this->Flash->render() ?>
-    <main class="container" style="height: 100vh - 226px">
+    <main class="container" style="height: 100vh - 178px">
         <?= $this->fetch('content') ?>
     </main>
     <?= $this->element('footer') ?>

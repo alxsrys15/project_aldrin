@@ -37,10 +37,21 @@ class ProductsController extends AppController
 
     public function index()
     {
-        $categories = $this->Products->Categories->find('all');
-        $query = $this->Products->find('all', [
-            'conditions' => !empty($this->request->query['category']) ? ['category_id' => $this->request->query['category']] : []
+        $categories = $this->Products->Categories->find('all' ,[
+            'conditions' => [
+                'is_active' => 1
+            ]
         ]);
+        $query = $this->Products->find('all', [
+            'conditions' => [
+                'is_active'
+            ]
+        ]);
+
+        if (isset($this->request->query['category'])) {
+            $query->where(['category_id' => $this->request->query['category']]);
+        }
+
         $products = $this->paginate($query);
 
         $this->set(compact('products', 'categories'));

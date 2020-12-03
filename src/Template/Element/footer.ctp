@@ -1,7 +1,8 @@
 <!-- Footer -->
 <?php
     $has_prefix = isset($this->request->params['prefix']);
-    $position = $has_prefix && $this->request->params['prefix'] !== "profile" ? "sticky" : "fixed" 
+    $position = $has_prefix && $this->request->params['prefix'] !== "profile" || $this->request->params['action'] === "register" ? "sticky" : "fixed";
+    
 ?>
 <footer style="bottom: 0 !important; position: <?= $position ?>; width: 100%">
 

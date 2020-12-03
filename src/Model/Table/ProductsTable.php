@@ -81,6 +81,9 @@ class ProductsTable extends Table
             ->maxLength('imgs', 500)
             ->allowEmptyString('imgs');
 
+        $validator
+            ->allowEmptyString('is_active');
+
         return $validator;
     }
 

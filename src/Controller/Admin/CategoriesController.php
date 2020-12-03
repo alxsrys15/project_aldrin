@@ -107,4 +107,16 @@ class CategoriesController extends AppController
 
         return $this->redirect(['action' => 'index']);
     }
+
+    public function updateCat ($id, $is_active = 1) {
+        $this->autoRender = false;
+        if ($id) {
+            $category = $this->Categories->get($id);
+            $category->is_active = $is_active;
+            if ($this->Categories->save($category)) {
+                $this->Flash->success('Category updated');
+                return $this->redirect(['action' => 'index']);
+            }
+        }
+    }
 }

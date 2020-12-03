@@ -12,6 +12,7 @@ use Cake\ORM\Entity;
  * @property float $price
  * @property int|null $category_id
  * @property string|null $imgs
+ * @property int|null $is_active
  *
  * @property \App\Model\Entity\Category $category
  * @property \App\Model\Entity\ProductStock[] $product_stocks
@@ -34,6 +35,7 @@ class Product extends Entity
         'price' => true,
         'category_id' => true,
         'imgs' => true,
+        'is_active' => true,
         'category' => true,
         'product_stocks' => true,
         'transaction_details' => true,
