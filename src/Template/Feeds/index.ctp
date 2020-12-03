@@ -27,7 +27,7 @@ foreach ($feeds as $key => $feed) {
     }
 </style>
 
-<div>
+<!-- <div style="overflow: auto;"> -->
     <div class="row">
         <div class="col-sm-6 offset-sm-3">
             <?php foreach ($feeds as $feed): ?>
@@ -77,16 +77,17 @@ foreach ($feeds as $key => $feed) {
             <?php endforeach ?>
         </div>
     </div>
-</div>
-<div class="paginator">
-    <ul class="pagination">
-        <?= $this->Paginator->first('<< ' . __('first')) ?>
-        <?= $this->Paginator->prev('< ' . __('previous')) ?>
-        <?= $this->Paginator->numbers() ?>
-        <?= $this->Paginator->next(__('next') . ' >') ?>
-        <?= $this->Paginator->last(__('last') . ' >>') ?>
-    </ul>
-</div>
+    <div class="paginator">
+        <ul class="pagination">
+            <?= $this->Paginator->first('<< ' . __('first')) ?>
+            <?= $this->Paginator->prev('< ' . __('previous')) ?>
+            <?= $this->Paginator->numbers() ?>
+            <?= $this->Paginator->next(__('next') . ' >') ?>
+            <?= $this->Paginator->last(__('last') . ' >>') ?>
+        </ul>
+    </div>
+<!-- </div> -->
+
 
 <script type="text/javascript">
     $(document).ready(function () {
