@@ -201,3 +201,25 @@ Type::build('timestamp')
 //Inflector::rules('irregular', ['red' => 'redlings']);
 //Inflector::rules('uninflected', ['dontinflectme']);
 //Inflector::rules('transliteration', ['/å/' => 'aa']);
+
+function getAction ($status) {
+    $action = '';
+    $s = strtolower($status);
+    switch ($s) {
+        case 'pending':
+            $action = "Order Received";
+            break;
+        case 'accepted':
+            $action = "Order Processing";
+            break;
+        case 'for delivery':
+            $action = "Order for delivery";
+            break;
+        case 'completed':
+            $action = "Order completed";
+        default:
+            # code...
+            break;
+    }
+    return $action;
+}

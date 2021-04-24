@@ -52,7 +52,7 @@ class TransactionsController extends AppController
     public function view($id = null)
     {
         $transaction = $this->Transactions->get($id, [
-            'contain' => ['Users', 'Statuses', 'TransactionTypes', 'TransactionDetails', 'TransactionDetails.Products'],
+            'contain' => ['Users', 'Statuses', 'TransactionTypes', 'TransactionDetails', 'TransactionDetails.Products', 'HistTransactions', 'HistTransactions.Users'],
         ]);
 
         $this->set('transaction', $transaction);
@@ -128,12 +128,19 @@ class TransactionsController extends AppController
         return $this->redirect(['action' => 'index']);
     }
 
-    public function changeStatus ($status_id, $transaction_id) {
+    public function changeStatus ($status_id, $transaction_id, $status_name) {
+
         if ($transaction_id) {
             $transaction = $this->Transactions->get($transaction_id);
             $transaction->status_id = $status_id;
             if ($this->Transactions->save($transaction)) {
                 $this->Flash->success('Transaction updated');
+                $hist_transaction = [
+                    'transaction_id' => $transaction_id,
+                    'action' => getAction($status_name),
+                    'user_id' => $this->Auth->User('id')
+                ];
+                $this->Transactions->HistTransactions->save($this->Transactions->HistTransactions->newEntity($hist_transaction));
             }
         }
         return $this->redirect(['action' => 'index']);

@@ -31,7 +31,7 @@
                         <button class="btn btn-sm <?= $transaction->status_id === 4 ? "disabled" : "" ?>" data-toggle="dropdown"><i class="fa fa-edit" aria-hidden="true"></i></button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                             <?php foreach ($statuses as $status): ?>
-                            <?= $this->Html->link($status->name, ['prefix' => 'admin', 'controller' => 'Transactions', 'action' => 'changeStatus', $status->id, $transaction->id], ['class' => 'dropdown-item']) ?>
+                            <?= $this->Html->link($status->name, ['prefix' => 'admin', 'controller' => 'Transactions', 'action' => 'changeStatus', $status->id, $transaction->id, $status->name], ['class' => 'dropdown-item']) ?>
                             <?php endforeach ?>
                         </div>
                     </div>

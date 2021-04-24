@@ -79,6 +79,27 @@
                 </table>
             </div>
         </div>
+        <br>
+        <div class="card">
+            <div class="card-header">
+                <h5 class="panel-title">TRANSACTION HISTORY</h5>
+            </div>
+            <div class="card-body">
+                <table class="table">
+                    <tbody>
+                        <?php foreach ($transaction->hist_transactions as $hist): ?>
+                        <tr>
+                            <td><?= $hist->created->format('Y-m-d h:i:s a') ?></td>
+                            <td><?= $hist->action ?></td>
+                            <?php if ($hist->user): ?>
+                                <td>by: <?= $hist->user->first_name . ' ' . $hist->user->last_name ?></td>
+                            <?php endif ?>
+                        </tr>
+                        <?php endforeach ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
 <div class="modal fade" id="imageModal" tabindex="-1">

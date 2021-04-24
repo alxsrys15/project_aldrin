@@ -156,7 +156,7 @@ class UsersTable extends Table
 
                 $entity->verification_token = $token;
                 if ($this->save($entity)) { //generate token and send email after saving user
-                    $this->getMailer('User')->send('welcome', [$entity]);
+                    // $this->getMailer('User')->send('welcome', [$entity]);
                 } else {
                     die('xxx');
                 }
