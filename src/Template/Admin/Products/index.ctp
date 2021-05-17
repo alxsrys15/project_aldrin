@@ -25,6 +25,7 @@
                 <td class="actions">
                     <!-- <a class="btn"><i class="fa fa-edit" aria-hidden="true"></i></a> -->
                     <?= $this->Html->link('<i class="fa fa-edit" aria-hidden="true"></i>', ['prefix' => 'admin', 'controller' => 'Products', 'action' => 'edit', $product->id], ['class' => 'btn btn-sm', 'escape' => false]) ?>
+                    <?= $this->Html->link('<i class="fas fa-eye" aria-hidden="true"></i>', ['prefix' => 'admin', 'controller' => 'Products', 'action' => 'view-stocks', $product->id], ['class' => 'btn btn-sm', 'escape' => false]) ?>
                 </td>
             </tr>
             <?php endforeach; ?>

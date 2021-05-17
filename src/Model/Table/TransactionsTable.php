@@ -135,7 +135,7 @@ class TransactionsTable extends Table
             $transaction = $this->get($entity->id, [
                 'contain' => ['Users']
             ]);
-            $this->getMailer('Transaction')->send('order', [$transaction]);
+            // $this->getMailer('Transaction')->send('order', [$transaction]);
         }
     }
 }

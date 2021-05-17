@@ -3,11 +3,19 @@ $total = 0;
 foreach ($items as $item) {
 	$total += $item['price'] * $item['count'];
 }
+$progress = getTransactionProgress($transaction->status->name);
 ?>
 
 <div class="container">
 	<h4>Track you order</h4>
 	<p class="mb-4">Here is your order summary.</p>
+	<div class="row">
+		<div class="col-lg-12 p-3 bg-white rounded shadow-sm mb-3">
+			<div class="progress">
+  				<div class="progress-bar" role="progressbar" style="width: <?= $progress['percent'] ?>%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"><?= $progress['action'] ?></div>
+			</div>
+		</div>
+	</div>
 	<div class="row">
 		<div class="col-lg-8 p-3 bg-white rounded shadow-sm mb-3">
 			<div class="table-responsive">

@@ -16,7 +16,7 @@ class DashboardsController extends AppController
         parent::initialize();
         $this->viewBuilder()->setLayout('admin');
         $this->loadModel('Transactions');
-        $this->loadModel('ProductStocks');
+        $this->loadModel('Products');
     }
     /**
      * Index method
@@ -28,10 +28,25 @@ class DashboardsController extends AppController
         $years = $this->Transactions->find('all', [
             'fields' => [
                 'year' => 'distinct YEAR(created)'
+            ],
+            'order' => [
+                'year' => 'DESC'
             ]
         ]);
 
-        $this->set(compact('years'));
+        $products = $this->Products->find('all');
+
+        $categories = $this->Products->Categories->find('list', [
+            'conditions' => [
+                'is_active' => 1
+            ]
+        ]);
+        $months = [];
+        for($i = 1 ; $i <= 12; $i++) {
+            $months[strtolower(date("F",mktime(0,0,0,$i,1,date("Y"))))] = date("F",mktime(0,0,0,$i,1,date("Y")));
+        }
+
+        $this->set(compact('years', 'products', 'categories', 'months'));
     }
 
     /**
@@ -128,17 +143,24 @@ class DashboardsController extends AppController
             ])
             ->group('month')
             ->order(['month' => 'DESC'])
-            ->where(['year(created)' => $year]);
+            ->where(['year(created)' => $year])
+            ->where(['status_id IN' => [2,3,4]]);
 
             $data = [];
+            $bg_colors = [];
             foreach ($query as $q) {
                 $data[] = [
                     'label' => $q->month,
                     'data' => $q->total
                 ];
+                $bg_colors[] = $q->total >= 10000 ? 'rgba(0, 255, 2, 0.4)' : 'rgba(241, 0, 0, 0.56)';
             }
+            $returnData = [
+                'data' => $data,
+                'bg_colors' => $bg_colors
+            ];
             $this->response->type('json');
-            $this->response->body(json_encode($data));
+            $this->response->body(json_encode($returnData));
             return $this->response;
         }
     }
@@ -146,24 +168,75 @@ class DashboardsController extends AppController
     public function getStocks () {
         $this->autoRender = false;
         if ($this->request->is('ajax')) {
-            $query = $this->ProductStocks->find('all', [
-                'contain' => 'Products'
+            $query = $this->Products->get($this->request->getData('prod_id'), [
+                'contain' => ['ProductStocks', 'ProductStocks.Sizes']
             ]);
-            $query->select([
-                'total' => $query->func()->sum('sku'),
-                'Products.name'
-            ])
-            ->group('Products.name');
+            
             $data = [];
-            foreach ($query as $q) {
+            foreach ($query->product_stocks as $q) {
                 $data[] = [
-                    'label' => $q->product->name,
-                    'data' => $q->total
+                    'label' => $q->variant . ' ' . '('.$q->size->name.')',
+                    'data' => $q->sku,
                 ];
+
+                $bg_colors[] = $q->sku >= 50 ? 'rgba(0, 255, 2, 0.4)' : 'rgba(241, 0, 0, 0.56)';
             }
+            $returnData = [
+                'data' => $data,
+                'bg_colors' => $bg_colors
+            ];
             $this->response->type('json');
-            $this->response->body(json_encode($data));
+            $this->response->body(json_encode($returnData));
             return $this->response;
         }
+    }
+
+    public function getBestSeller () {
+        $this->autoRender = false;
+        if ($this->request->is('ajax')) {
+            $query = $this->Transactions->TransactionDetails->find();
+            $query->select($this->Transactions->TransactionDetails)
+                ->select([
+                    'total' => $query->func()->sum('TransactionDetails.total_qty'),
+                    'label' => $query->func()->concat(['Products.name' => 'identifier', ' - ', 'Sizes.name' => 'identifier'])
+                ])
+                ->where([
+                    'monthname(TransactionDetails.created)' => $this->request->getData('month'),
+                    'year(TransactionDetails.created)' => $this->request->getData('year'),
+                    'Products.category_id' => $this->request->getData('category'),
+                    'Transactions.status_id IN' => [2,3,4]
+                ])
+                ->limit(5)
+                ->group(['TransactionDetails.product_stocks_id'])
+                ->order(['TransactionDetails.total_qty' => 'DESC'])
+                ->innerJoinWith('Products')
+                ->innerJoinWith('Transactions')
+                ->innerJoinWith('ProductStocks')
+                ->innerJoinWith('ProductStocks.Sizes');
+            $data = [];
+            $bg_colors = [];
+            foreach ($query as $q) {
+                $data[] = [
+                    'label' => $q->label,
+                    'data' => $q->total
+                ];
+                $bg_colors[] = 'rgba('.implode(",", $this->generateRgb()).')';
+            }
+            $returnData = [
+                'data' => $data,
+                'bg_colors' => $bg_colors
+            ];
+            $this->response->type('json');
+            $this->response->body(json_encode($returnData));
+            return $this->response;
+        }
+    }
+
+    private function generateRgb () {
+        $rgbColor = [];
+        foreach(array('r', 'g', 'b', 'a') as $color){
+            $rgbColor[$color] = $color == 'a' ? '0.4' : mt_rand(0, 255);
+        }
+        return $rgbColor;
     }
 }

@@ -185,4 +185,86 @@ class ProductsController extends AppController
             }
         }
     }
+
+    public function viewStocks ($product_id) {
+        if ($product_id) {
+            $product = $this->Products->get($product_id, [
+                'contain' => [
+                    'ProductStocks',
+                    'ProductStocks.Sizes'
+                ]
+            ]);
+            $this->set(compact('product'));
+        }
+    }
+
+    public function addStocks () {
+        $this->autoRender = false;
+        if ($this->request->is('post')) {
+            $pv_id = $this->request->getData('pv_id');
+            $quantity = $this->request->getData('quantity');
+            if ($pv_id) {
+                $pv = $this->Products->ProductStocks->get($pv_id);
+                $pv->sku += $quantity;
+                if ($this->Products->ProductStocks->save($pv)) {
+                    $hist_data = [
+                        'product_stock_id' => $pv_id,
+                        'action' => 'added ' . $quantity . ' pcs.',
+                        'user_id' => $this->Auth->User('id')
+                    ];
+
+                    $this->Products->ProductStocks->HistInventory->save($this->Products->ProductStocks->HistInventory->newEntity($hist_data));
+                    $this->Flash->success(__('Stock added!'));
+                }
+            }
+        }
+        return $this->redirect(['action' => 'viewStocks', $pv->product_id]);
+    }
+
+    public function removeStocks () {
+        $this->autoRender = false;
+        if ($this->request->is('post')) {
+            $pv_id = $this->request->getData('rem_pv_id');
+            $quantity = $this->request->getData('rem_quantity');
+            if ($pv_id) {
+                $pv = $this->Products->ProductStocks->get($pv_id);
+                $pv->sku -= $quantity;
+                if ($this->Products->ProductStocks->save($pv)) {
+                    $hist_data = [
+                        'product_stock_id' => $pv_id,
+                        'action' => 'removed ' . $quantity . ' pcs.',
+                        'user_id' => $this->Auth->User('id')
+                    ];
+
+                    $this->Products->ProductStocks->HistInventory->save($this->Products->ProductStocks->HistInventory->newEntity($hist_data));
+                    $this->Flash->success(__('Stock removed!'));
+                }
+            }
+        }
+        return $this->redirect(['action' => 'viewStocks', $pv->product_id]);
+    }
+
+    public function stockHistory () {
+        $hists = [];
+        $this->layout = null;
+        if ($this->request->is('post')) {
+            $pv_id = $this->request->getData('pv_id');
+            if ($pv_id) {
+                $query = $this->Products->ProductStocks->HistInventory->find('all', [
+                    'conditions' => [
+                        'product_stock_id' => $pv_id
+                    ],
+                    'order' => [
+                        'created' => 'DESC'
+                    ],
+                    'contain' => [
+                        'Users'
+                    ]
+                ]);
+                $hists = $this->paginate($query, ['limit' => 5]);
+            }
+        }
+        $this->set(compact('hists', 'pv_id'));
+        $this->render('hist_inventory_table');
+    }
 }

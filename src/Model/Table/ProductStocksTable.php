@@ -47,6 +47,9 @@ class ProductStocksTable extends Table
         $this->belongsTo('Sizes', [
             'foreignKey' => 'size_id',
         ]);
+        $this->hasMany('HistInventory', [
+            'foreignKey' => 'product_stock_idw'
+        ]);
     }
 
     /**

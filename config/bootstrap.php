@@ -223,3 +223,54 @@ function getAction ($status) {
     }
     return $action;
 }
+
+function getActionById ($status_id) {
+    $action = '';
+    switch ($status_id) {
+        case 1:
+            $action = "Order Received";
+            break;
+        case 2:
+            $action = "Order Processing";
+            break;
+        case 3:
+            $action = "Order for delivery";
+            break;
+        case 4:
+            $action = "Order completed";
+        default:
+            # code...
+            break;
+    }
+    return $action;
+}
+
+function getTransactionProgress ($status) {
+    $percent = 0;
+    $action = '';
+    $s = strtolower($status);
+    switch ($s) {
+        case 'pending':
+            $percent = 25;
+            $action = "Order Received";
+            break;
+        case 'accepted':
+            $percent = 50;
+            $action = "Order Processing";
+            break;
+        case 'for delivery':
+            $percent = 75;
+            $action = "Order for delivery";
+            break;
+        case 'completed':
+            $percent = 100;
+            $action = "Order completed";
+        default:
+            # code...
+            break;
+    }
+    return [
+        'percent' => $percent,
+        'action' => $action
+    ];
+}

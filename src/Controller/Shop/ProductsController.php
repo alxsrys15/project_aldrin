@@ -198,7 +198,7 @@ class ProductsController extends AppController
         if (!empty($items)) {
             if (in_array(pathinfo($image['name'], PATHINFO_EXTENSION), ['jpg', 'jpeg', 'png'])) {
                 if (move_uploaded_file($image['tmp_name'], WWW_ROOT . 'img/payment_images/' . $image['name'])) {
-                    return $this->redirect(['prefix' => 'shop','controller' => 'products', 'action' => 'completeOrder', '?' => ['order_details' => $jwt->encode(['items' => $items, 'shipping_address' => $shipping_address, 'image' => $image['name']]), 'success' => true, 'transaction_type_id' => '3', 'token' => '123']]);
+                    return $this->redirect(['prefix' => 'shop','controller' => 'products', 'action' => 'completeOrder', '?' => ['order_details' => $jwt->encode(['items' => $items, 'shipping_address' => $shipping_address, 'image' => $image['name']]), 'success' => true, 'transaction_type_id' => '3', 'token' => $this->generateToken(3)]]);
                 }
             }
         }
@@ -207,7 +207,7 @@ class ProductsController extends AppController
     private function processCOD ($items, $shipping_address) {
         $jwt = new JWT('secret', 'HS256', 3600, 10);
         if (!empty($items)) {
-            return $this->redirect(['prefix' => 'shop','controller' => 'products', 'action' => 'completeOrder', '?' => ['order_details' => $jwt->encode(['items' => $items, 'shipping_address' => $shipping_address]), 'success' => true, 'transaction_type_id' => '2', 'token' => '123']]);
+            return $this->redirect(['prefix' => 'shop','controller' => 'products', 'action' => 'completeOrder', '?' => ['order_details' => $jwt->encode(['items' => $items, 'shipping_address' => $shipping_address]), 'success' => true, 'transaction_type_id' => '2', 'token' => $this->generateToken(2)]]);
         }
     }
 
@@ -264,22 +264,24 @@ class ProductsController extends AppController
     private function generateToken ($transaction_type_id) {
         $prefix = $transaction_type_id == "2" ? "COD" : "BANK";
         $u_id = uniqid($prefix, true);
-        $token_exist = $this->Transactions->exists(['paypal_token' => $u_id]);
+        $token_exist = $this->Products->TransactionDetails->Transactions->exists(['paypal_token' => $u_id]);
         return $token_exist ? generateToken($transaction_type_id) : $u_id;
     }
 
     public function completeOrder () {
         $this->loadModel('Transactions');
         $jwt = new JWT('secret', 'HS256', 3600, 10);
+        $shipping_fee = 100;
         if ($this->request->is('get')) {
             $is_success = $this->request->getQuery()['success'];
-            // pr($this->request->query);die();
             $saved = false;
             if ($is_success) {
                 $order_details = $jwt->decode($this->request->getQuery()['order_details']);
                 $items = json_decode(json_encode($order_details['items']), true);
                 $shipping_address = json_decode(json_encode($order_details['shipping_address']), true);
+                
                 $token_check = $this->Transactions->exists(['paypal_token' => $this->request->getQuery()['token']]);
+                // pr($token_check);die();
                 $image = isset($order_details['image']) ? $order_details['image'] : null;
                 $transaction_type = $this->request->getQuery()['transaction_type_id'];
                 $token = "";
@@ -302,17 +304,23 @@ class ProductsController extends AppController
                         'total_price' => (int) $total,
                         'transaction_type_id' => $transaction_type,
                         'status_id' => $transaction_type == "1" ? 2 : 1,
-                        'paypal_token' => $transaction_type == "1" ? $this->request->getQuery()['token'] : $this->generateToken($transaction_type),
+                        'paypal_token' => $this->request->getQuery()['token'],
                         'transaction_details' => $newOrderDetails,
-                        'shipping_fee' => 100,
+                        'shipping_fee' => $shipping_fee,
                         'payment_image' => $image
                     ];
                     $newOrder = array_merge($newOrder, $shipping_address);
-                    
-                    $newOrder = $this->Transactions->newEntity($newOrder, ['associated' => 'TransactionDetails']);
-                    
-                    if ($this->Transactions->save($newOrder, ['associated' => 'TransactionDetails'])) {
+
+                    $newOrder = $this->Transactions->newEntity($newOrder, ['associated' => ['TransactionDetails']]);
+                    if ($t = $this->Transactions->save($newOrder, ['associated' => ['TransactionDetails']])) {
                         $token = $newOrder['paypal_token'];
+                        $hist_data = [
+                            'transaction_id' => $t->id,
+                            'user_id' => $this->Auth->User('id'),
+                            'action' => $transaction_type == "1" ? getActionById(2) : getActionById(1)
+                        ];
+                        $hist_entity = $this->Transactions->HistTransactions->newEntity($hist_data);
+                        $this->Transactions->HistTransactions->save($hist_entity);
                         $this->adjustStock($items);
                     } else {
                         pr($newOrder);die();
@@ -361,6 +369,7 @@ class ProductsController extends AppController
 
     private function adjustStock($items = []) {
         if (!empty($items)) {
+            $hist_data = [];
             foreach ($items as $i) {
                 $pv = $this->Products->ProductStocks->find('all', [
                     'conditions' => [
@@ -368,7 +377,14 @@ class ProductsController extends AppController
                     ]
                 ])->first();
                 $pv->sku = $pv->sku - $i['count'];
+                $hist_data[] = [
+                    'user_id' => $this->Auth->User('id'),
+                    'product_stock_id' => $i['stock_id'],
+                    'action' => 'bought ' . $i['count'] . ' pcs.',
+                ];
                 $this->Products->ProductStocks->save($pv);
+                $hist = $this->Products->ProductStocks->HistInventory->newEntities($hist_data);
+                $this->Products->ProductStocks->HistInventory->save($hist);
             }
         }
     }
