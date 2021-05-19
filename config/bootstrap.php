@@ -228,10 +228,10 @@ function getActionById ($status_id) {
     $action = '';
     switch ($status_id) {
         case 1:
-            $action = "Order Received";
+            $action = "Order Processing";
             break;
         case 2:
-            $action = "Order Processing";
+            $action = "Order Confirmed";
             break;
         case 3:
             $action = "Order for delivery";
@@ -252,11 +252,11 @@ function getTransactionProgress ($status) {
     switch ($s) {
         case 'pending':
             $percent = 25;
-            $action = "Order Received";
+            $action = "Order processing";
             break;
         case 'accepted':
             $percent = 50;
-            $action = "Order Processing";
+            $action = "Order confirmed";
             break;
         case 'for delivery':
             $percent = 75;

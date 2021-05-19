@@ -384,7 +384,7 @@ class ProductsController extends AppController
                 ];
                 $this->Products->ProductStocks->save($pv);
                 $hist = $this->Products->ProductStocks->HistInventory->newEntities($hist_data);
-                $this->Products->ProductStocks->HistInventory->save($hist);
+                $this->Products->ProductStocks->HistInventory->saveMany($hist);
             }
         }
     }
