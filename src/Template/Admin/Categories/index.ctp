@@ -13,9 +13,9 @@
 			<td><?= $category->name ?></td>
 			<td>
 				<?php if ($category->is_active): ?>
-				<?= $this->Html->link('Deactivate', ['action' => 'updateCat', $category->id, 0], ['class' => 'btn btn-sm btn-success']) ?>
+				<?= $this->Html->link('Deactivate', ['action' => 'updateCat', $category->id, 0], ['class' => 'btn btn-sm btn-danger']) ?>
 				<?php else: ?>
-				<?= $this->Html->link('Activate', ['action' => 'updateCat', $category->id], ['class' => 'btn btn-sm btn-danger']) ?>
+				<?= $this->Html->link('Activate', ['action' => 'updateCat', $category->id], ['class' => 'btn btn-sm btn-success']) ?>
 				<?php endif ?>
 			</td>
 		</tr>

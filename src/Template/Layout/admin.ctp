@@ -15,6 +15,7 @@
  */
 
 $cakeDescription = 'Loukha Clothing';
+$controller = strtolower($this->request->params['controller']);
 ?>
 <!DOCTYPE html>
 <html>
@@ -45,7 +46,7 @@ $cakeDescription = 'Loukha Clothing';
 	    </button>
 	    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
     		<ul class="navbar-nav">
-    			<li class="nav-item dropdown">
+    			<li class="nav-item dropdown <?= $controller == "products" ? "active" : "" ?>">
         			<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           				Products
         			</a>
@@ -54,13 +55,16 @@ $cakeDescription = 'Loukha Clothing';
           				<?= $this->Html->link('Categories', ['prefix' => 'admin', 'controller' => 'Categories', 'action' => 'index'], ['class' => 'dropdown-item']) ?>
         			</div>
       			</li>
-      			<li class="nav-item">
-              <?= $this->Html->link('Transactions', ['prefix' => 'admin', 'controller' => 'Transactions', 'action' => 'index'], ['class' => 'nav-link']) ?>
+                <li class="nav-item <?= $controller == "users" ? "active" : "" ?>">
+                    <?= $this->Html->link('Users', ['prefix' => 'admin', 'controller' => 'Users', 'action' => 'index'], ['class' => 'nav-link']) ?>
+                </li>
+      			<li class="nav-item <?= $controller == "transactions" ? "active" : "" ?>">
+                    <?= $this->Html->link('Transactions', ['prefix' => 'admin', 'controller' => 'Transactions', 'action' => 'index'], ['class' => 'nav-link']) ?>
       			</li>
-      			<li class="nav-item">
+      			<li class="nav-item <?= $controller == "feeds" ? "active" : "" ?>">
         			<?= $this->Html->link('Feeds', ['prefix' => 'admin', 'controller' => 'Feeds', 'action' => 'index'], ['class' => 'nav-link']) ?>
       			</li>
-      			<li class="nav-item">
+      			<li class="nav-item <?= $controller == "dashboards" ? "active" : "" ?>">
         			<?= $this->Html->link('Dashboards', ['prefix' => 'admin', 'controller' => 'Dashboards', 'action' => 'index'], ['class' => 'nav-link']) ?>
       			</li>
     		</ul>
@@ -73,6 +77,10 @@ $cakeDescription = 'Loukha Clothing';
 	                </span>
 	            </a>
 	            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                    <a href="#" class="dropdown-item" data-toggle="modal" data-target="#change-pass-modal">
+                        <i class="fa fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                        Change Password
+                    </a>
 	                <?= $this->Html->link('<i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i> Logout', ['prefix' => false,'controller' => 'Users', 'action' => 'logout'], ['escape' => false, 'class' => 'dropdown-item']) ?>
 	            </div>
 	        </li>
@@ -97,11 +105,71 @@ $cakeDescription = 'Loukha Clothing';
 		</nav>
         <?= $this->fetch('content') ?>
     </div>
+    <div class="modal fade" id="change-pass-modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Change Password</h5>
+                </div>
+                <div class="modal-body">
+                    <?= $this->Form->create(null, ['url' => ['prefix' => 'admin', 'controller' => 'Users', 'action' => 'changePassword'], 'id' => 'change-pass-form']) ?>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="curr_pass" class="col-form-label">Current Password</label>
+                                <?= $this->Form->input('curr_password', ['class' => 'form-control', 'required', 'autocomplete' => 'off', 'label' => false, 'type' => 'password']) ?>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="new_pass" class="col-form-label">New Password</label>
+                                <?= $this->Form->input('new_pass', ['class' => 'form-control', 'required', 'autocomplete' => 'off', 'label' => false, 'type' => 'password']) ?>
+                            </div>
+                            <div class="invalid-feedback validation-helper" style="display: none">
+                                Password do not match.
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="con_new_pass" class="col-form-label">Confirm New Password</label>
+                                <?= $this->Form->input('con_new_pass', ['class' => 'form-control', 'required', 'autocomplete' => 'off', 'label' => false, 'type' => 'password']) ?>
+                            </div>
+                            <div class="invalid-feedback validation-helper" style="display: none">
+                                Password do not match.
+                            </div>
+                        </div>
+                    </div>
+                    <?= $this->Form->end() ?>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" form="change-pass-form">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <footer>
     </footer>
 </body>
 <script type="text/javascript">
-  var url = '<?= $this->Url->build('/', true); ?>';
-  var csrfToken = <?= json_encode($this->request->getParam('_csrfToken')) ?>;
+    var url = '<?= $this->Url->build('/', true); ?>';
+    var csrfToken = <?= json_encode($this->request->getParam('_csrfToken')) ?>;
+    $(document).ready(function () {
+        $('#change-pass-form').on('submit', function () {
+            const password = $('#new-pass').val();
+            const password2 = $('#con-new-pass').val();
+            if (password !== password2) {
+                $('#new-pass, #con-new-pass').addClass('is-invalid');
+                $('.validation-helper').show();
+                return false;
+            }
+        });
+
+        $('#change-pass-modal').on('hide.bs.modal', function () {
+            $('#new-pass, #con-new-pass').removeClass('is-invalid');
+            $('#new-pass, #con-new-pass, #curr-password').val('');
+            $('.validation-helper').hide();
+        });
+    });
 </script>
 </html>
